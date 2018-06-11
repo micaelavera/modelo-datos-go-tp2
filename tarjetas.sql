@@ -34,7 +34,7 @@ create table compra(
 	nrotarjeta   char(12),
 	nrocomercio  integer,
 	fecha        timestamp,
-	monto        decimal(7,2);
+	monto        decimal(7,2),
 	pagado       boolean
 );
 
@@ -89,25 +89,29 @@ create table detalle(
 
 
 --PRIMARY KEY
-alter table add constraint cliente_pk   primary key (nrocliente);
-alter table add constraint tarjeta_pk   primary key (nrotarjeta);
-alter table add constraint comercio_pk  primary key (nrocomercio);
-alter table add constraint compra_pk    primary key (nrooperacion);
-alter table add constraint rechazo_pk   primary key (nrorechazo);
-alter table add constraint cierre_pk0   primary key (año);
-alter table add constraint cierre_pk1   primary key (mes);
-alter table add constraint cierre_pk2   primary key (terminacion);
-alter table add constraint cabecera_pk  primary key (nroresumen);
-alter table add constraint detalle_pk0  primary key (nroresumen);
-alter table add constraint cabecera_pk1 primary key (nrolinea);
+alter table cliente add constraint cliente_pk   primary key (nrocliente);
+alter table tarjeta add constraint tarjeta_pk   primary key (nrotarjeta);
+alter table comercio add constraint comercio_pk  primary key (nrocomercio);
+alter table compra add constraint compra_pk    primary key (nrooperacion);
+alter table rechazo add constraint rechazo_pk   primary key (nrorechazo);
+alter table cierre add constraint cierre_pk0   primary key (año,mes,terminacion);
+--alter table cierre add constraint cierre_pk1   primary key (mes);
+--alter table cierre  add constraint cierre_pk2   primary key (terminacion);
+alter table cabecera add constraint cabecera_pk  primary key (nroresumen);
+alter table detalle add constraint detalle_pk0  primary key (nroresumen);
+--alter table detalle add constraint cabecera_pk1 primary key (nrolinea);
 
 --FOREIGN KEY
-alter table add constraint tarjeta_fk0 foreign key (nrocliente)  references cliente (nrocliente);
-alter table add constraint compra_fk0  foreign key (nrotarjeta)  references tarjeta (nrotarjeta);
-alter table add constraint compra_fk1  foreign key (nrocomercio) references comerio (nrocomercio);
-alter table add constraint rechazo_fk0 foreign key (nrotarjeta)  references  tarjeta(nrotarjeta);
-alter table add constraint rechazo_fk1 foreign key (nrocomercio) references  comercio(nrocomercio);
-alter table add constraint cabecera_fk foreign key (nrotarjeta)  references  tarjeta(nrotarjeta);
+alter table tarjeta add constraint tarjeta_fk0 foreign key (nrocliente)  references cliente (nrocliente);
+alter table compra add constraint compra_fk0  foreign key (nrotarjeta)  references tarjeta (nrotarjeta);
+alter table compra add constraint compra_fk1  foreign key (nrocomercio) references comercio (nrocomercio);
+alter table rechazo add constraint rechazo_fk0 foreign key (nrotarjeta)  references tarjeta(nrotarjeta);
+alter table rechazo add constraint rechazo_fk1 foreign key (nrocomercio) references comercio(nrocomercio);
+alter table cabecera add constraint cabecera_fk foreign key (nrotarjeta)  references tarjeta(nrotarjeta);
+
+
+--INSERCION DE DATOS
+insert into cliente values(1,'Jorge','Rodriguez','Godoy Cruz 1064','45843863');
 
 
 
