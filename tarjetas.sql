@@ -108,7 +108,7 @@ alter table add constraint compra_fk0  foreign key (nrotarjeta)  references
 tarjeta (nrotarjeta);
 alter table add constraint compra_fk1  foreign key (nrocomercio) references
 comerio (nrocomercio);
-alter table add constraint rechazo_fk0 foreign key (nrotarjeta)  references tarjeta(nrotarjeta);
+alter table add constraint rechazo_fk0 foreign key (nrotarjeta)  references  tarjeta(nrotarjeta);
 alter table add constraint rechazo_fk1 foreign key (nrocomercio) references  comercio(nrocomercio);
-alter table add constraint cabecera_fk foreign key (nrotarjeta)  references tarjeta(nrotarjeta);
+alter table add constraint cabecera_fk foreign key (nrotarjeta)  references  tarjeta(nrotarjeta);
 
