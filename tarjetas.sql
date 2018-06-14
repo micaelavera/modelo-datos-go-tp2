@@ -31,7 +31,7 @@ create table comercio(
 
 create table compra(
 	nrooperacion integer,
-	nrotarjeta   char(12),
+	nrotarjeta   char(16),
 	nrocomercio  integer,
 	fecha        timestamp,
 	monto        decimal(7,2),
@@ -40,7 +40,7 @@ create table compra(
 
 create table rechazo(
 	nrorechazo  integer,
-	nrotarjeta  char(12),
+	nrotarjeta  char(16),
 	nrocomercio integer,
 	fecha       timestamp,
 	monto       decimal(7,2),
@@ -48,7 +48,7 @@ create table rechazo(
 );
 
 create table cierre(
-	año         integer,
+	anio         integer,
 	mes         integer,
 	terminacion integer,
 	fechainicio date,
@@ -60,7 +60,7 @@ create table cabecera(
 	nombre     varchar(64),
 	apellido   varchar(64),
 	domicilio  varchar(64),
-	nrotarjeta char(12),
+	nrotarjeta char(16),
 	desde      date,
 	hasta      date,
 	vence      date,
@@ -74,6 +74,26 @@ create table detalle(
 	nombrecomercio  varchar(64),
 	monto           decimal(7,2)
 );
+
+create table alerta(
+	nroalerta   integer,
+	nrotarjeta  char(16), fk
+	fecha       timestamp,
+	nrorechazo  integer;fk
+	codalerta   integer --0:rechazo, 1:compra 1min, 5:compra 5min, 32:límite
+	descripcion  varchar(64)
+);
+
+-- Esta tabla no es parte del modelo de datos, pero se incluye para
+-- poder probar las funciones.
+
+create table consumo(
+	nrotarjeta 	char(16),
+	codseguridad	char(4),
+	nrocomercio 	integer,
+	monto        	decimal(7,2)
+);
+
 
 
 
@@ -95,6 +115,7 @@ alter table cierre   add constraint cierre_pk    primary key (año,mes,terminaci
 alter table cabecera add constraint cabecera_pk  primary key (nroresumen);
 alter table detalle  add constraint detalle_pk   primary key (nroresumen,nrolinea);
 --alter table detalle add constraint cabecera_pk1 primary key (nrolinea);
+alter table alerta add constraint alerta_pk primary key (nroalerta);
 
 --FOREIGN KEY
 alter table tarjeta  add constraint tarjeta_fk0 foreign key (nrocliente)  references cliente  (nrocliente);
@@ -108,13 +129,13 @@ alter table cabecera add constraint cabecera_fk foreign key (nrotarjeta)  refere
 --INSERCION DE DATOS
 
 --CLIENTES
-insert into cliente values(1,'Jorge','Rodriguez','Godoy Cruz 1064','4584-3863');
+insert into cliente values(1,'José','Argento','Godoy Cruz 1064','4584-3863');
 insert into cliente values(2,'Mercedes', 'Benz', 'Pte Perón 1223','4665-8989');
 insert into cliente values(3,'Megan', 'Ocaranza', 'Tribulato 2345', '4500-7651');
 insert into cliente values(4,'Luis', 'Rios', 'Dorrego 1234', '4213-0153');
 insert into cliente values(5,'Julio', 'Cortazar', ' Av Balbin 534', '4890-8747');
 insert into cliente values(6,'Tomás', 'Aguirre', 'Urquiza 540', '4707-1600');
-insert into cliente values(7,'José', 'Avalos', 'Av E Perón 7716', '4589 - 3191');
+insert into cliente values(7,'Juan', 'Avalos', 'Av E Perón 7716', '4589 - 3191');
 insert into cliente values(8, 'Prudencia', 'Arzuaga','Rivadavia 416');
 insert into cliente values(9, 'Damiana', 'Molina', 'Malvinas 890', '4129-0964');
 insert into cliente values(10, 'Ramón', 'Perez', 'Las Heras 460', '4556-8970');
@@ -127,7 +148,7 @@ insert into cliente values(16, 'Harry', 'Potter', 'Gutiérrez 908', '4768-9475')
 insert into cliente values(17, 'Pedro', 'Moreno', ' Julian Rejala 999',' 4556-9872');
 insert into cliente values(18, 'Ofelia', 'Le Brun', 'Paunero 7856','4389-7531');
 insert into cliente values(19, 'Fiona', 'Las Margaritas 484', '4895-7939');
-insert into cliente values(20,'Orlando', 'Bloom', 'Belgrano 1257',' 4664-1640');
+insert into cliente values(20,'Evan', 'Peters', 'Irigoin 296',' 4664-1640');
 
 
 
@@ -135,6 +156,17 @@ insert into cliente values(20,'Orlando', 'Bloom', 'Belgrano 1257',' 4664-1640');
 
 
 --TARJETAS
+insert into tarjeta values('1234567898591234567' , 1, '201106', '201606','1234',235674.81,vigente
+
+
+nrotarjeta   char(12),
+	nrocliente   integer,
+	validadesde  char(6), --e.g 201106
+	validahasta  char(6),
+	codseguridad char(4),
+	limitecompra decimal(8,2),
+	estado       char(10) --'vigente', 'suspendida', 'anulada'
+);
 
 
 
