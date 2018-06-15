@@ -86,7 +86,7 @@ create table consumo(
 	codseguridad	char(4),
 	nrocomercio 	integer,
 	monto        	decimal(7,2)
-)`)
+);`)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -101,6 +101,7 @@ func crearDB() {
 	defer db.Close()
 
 	//Exec para crear la DB tp2
+	_, err = db.Exec(`create database tp2;`)
 
 }
 
@@ -112,12 +113,12 @@ func main() {
 	}
 	defer db.Close()
 
-	crearDB()
-
 	var n int
-	fmt.Printf("Enter 1 to create tables: ")
+	fmt.Printf("Enter 1 to create database: ")
 	fmt.Scanf("%d", &n)
 	if n == 1 {
+		crearDB()
+	} else if n == 2 {
 		crearTablas(db)
 	}
 
