@@ -151,7 +151,27 @@ insert into cliente values(19, 'Fiona', 'Las Margaritas 484', '4895-7939');
 insert into cliente values(20,'Evan', 'Peters', 'Irigoin 296',' 4664-1640');
 
 
-
+--COMERCIOS
+insert into comercio values(1,'Anubis','Av. Pres. Juan Domingo Peron 3497','1613','4463-5343');
+insert into comercio values(2,'Si A La Pizza','25 de Mayo 2502','1613','4463-2314');
+insert into comercio values(3,'Narrow','Av. Pres. Juan Domingo Peron 1420','1663','4667-7297');
+insert into comercio values(4,'Starbucks Coffee','Parana 3745','1640','474898');
+insert into comercio values(5,'47 Street','Cruce Ruta 8 y Ruta 202','1613','4667-5770');
+insert into comercio values(6,'Frávega','Av. Pres. Juan Domingo Peron 1127','1663','4667-4009');
+insert into comercio values(7,'Optica Ivaldi','Av. Pres. Juan Domingo Peron 1645','1663','4667-2332');
+insert into comercio values(8,'Farmacity','Av. Constituyentes 6093/99','1617','4587-8243');
+insert into comercio values(9,'Cúspide','Cruce Ruta 8 y Ruta 202','1613','1521508092');
+insert into comercio values(10,'Garbarino','Av. Dr. Ricardo Balbín 1198','1663',' 4667-6534');
+insert into comercio values(11,'Starbucks Coffee','Cruce Ruta 8 y Ruta 202','1613','4667-5434');
+insert into comercio values(12,'Bonafide',' Italia 1249','1663','4667-4545');
+insert into comercio values(13,'Optica Gris','Av. Arturo Illia 5243','1613','4463-8344');
+insert into comercio values(14,'Matu Jean´s','Av. Pres. Juan Domingo ]Peron 3300','1613','4463-9089');
+insert into comercio values(15,'Compumundo','Belgrano 1401','1663','4667-3425');
+insert into comercio values(16,'Falabella','Parana 3745','1640','4717-8100');
+insert into comercio values(17,'McDonald´s','Av. Pres. Juan Domingo Peron 983','1662','4668-0912');
+insert into comercio values(18,'M 58','Charlone 1201','1663','4667-4532');
+insert into comercio values(19,'Cine Hoyts Unicenter','Parana 3745','1640','4717-8109');
+insert into comercio values(20,'Solo Deportes','Av. Pres. Juan Domingo Peron 1317','1663','4667-3453');
 
 
 
