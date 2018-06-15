@@ -5,9 +5,9 @@ create database tarjeta;
 
 create table cliente(
 	nrocliente integer,
-	nombre     varchar(64), 
+	nombre     varchar(64),
 	apellido   varchar(64),
-	domicilio  varchar(64), 
+	domicilio  varchar(64),
 	telefono   char(12)
 );
 
@@ -77,7 +77,7 @@ create table detalle(
 
 create table alerta(
 	nroalerta   integer,
-	nrotarjeta  char(16), fk
+	nrotarjeta  char(16), fk alter table alerta add constraint alerta_fk0  foreing key (nrotarjeta) references tarjeta (nrotarjeta);
 	fecha       timestamp,
 	nrorechazo  integer;fk
 	codalerta   integer --0:rechazo, 1:compra 1min, 5:compra 5min, 32:límite
@@ -167,6 +167,3 @@ nrotarjeta   char(12),
 	limitecompra decimal(8,2),
 	estado       char(10) --'vigente', 'suspendida', 'anulada'
 );
-
-
-
