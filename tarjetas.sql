@@ -149,7 +149,29 @@ insert into cliente values(19, 'Fiona', 'Las Margaritas 484', '4895-7939');
 insert into cliente values(20,'Evan', 'Peters', 'Irigoin 296',' 4664-1640');
 
 	--TARJETAS
-	insert into tarjeta values('1234567890123456' , 1, '201106', '201606','1234',235674.81,'vigente');
+
+	insert into tarjeta values('5703068016463339' ,  1, '201106', '201606','1234',200000.00,'anulada');
+    insert into tarjeta values('5578153904072665' ,  2, '201606', '201906','1123',200000.00,'vigente');
+    insert into tarjeta values('5681732770558693' ,  3, '201606', '201906','1132',200000.00,'vigente');
+    insert into tarjeta values('5460322592744445' ,  4, '201606', '201906','1231',200000.00,'vigente');
+    insert into tarjeta values('5430913178957141' ,  5, '201606', '201906','2122',200000.00,'vigente');
+    insert into tarjeta values('5019155187146691' ,  6, '201606', '201906','2433',200000.00,'vigente');
+    insert into tarjeta values('5019792017295163' ,  7, '201606', '201906','2344',200000.00,'vigente');
+    insert into tarjeta values('5019919938293361' ,  8, '201606', '201906','2235',200000.00,'vigente');
+    insert into tarjeta values('6297661287321366' ,  9, '201606', '201906','3236',200000.00,'vigente');
+    insert into tarjeta values('6286339466940040' , 10, '201606', '201906','3337',200000.00,'vigente');
+    insert into tarjeta values('6270607345512992' , 11, '201606', '201906','3438',200000.00,'vigente');
+    insert into tarjeta values('6204296517127663' , 12, '201606', '201906','3239',235674.81,'vigente');
+    insert into tarjeta values('6293235484090035' , 13, '201606', '201906','4110',235674.81,'vigente');
+    insert into tarjeta values('6921678767563105' , 14, '201606', '201906','4211',235674.81,'vigente');
+    insert into tarjeta values('6334546019765631' , 15, '201606', '201906','4412',235674.81,'vigente');
+    insert into tarjeta values('6761361843313612' , 16, '201606', '201906','4313',235674.81,'vigente');
+    insert into tarjeta values('6528492702135343' , 17, '201606', '201906','5214',235674.81,'vigente');
+    insert into tarjeta values('6585963936581775' , 18, '201606', '201906','6215',235674.81,'vigente');
+    insert into tarjeta values('3696418858377210' , 19, '201606', '201906','7216',235674.81,'vigente');
+    insert into tarjeta values('3689635420613720' , 19, '201606', '201906','8217',235674.81,'vigente');
+    insert into tarjeta values('3033446987174022' , 20, '201606', '201906','9218',235674.81,'vigente');
+    insert into tarjeta values('3602403813503232' , 20, '201606', '201906','1119',235674.81,'vigente');
 
 
 
