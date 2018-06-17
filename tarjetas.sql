@@ -150,6 +150,12 @@ insert into cliente values(18, 'Ofelia', 'Le Brun', 'Paunero 7856','4389-7531');
 insert into cliente values(19, 'Fiona', 'Las Margaritas 484', '4895-7939');
 insert into cliente values(20,'Evan', 'Peters', 'Irigoin 296',' 4664-1640');
 
+	--TARJETAS
+	insert into tarjeta values('1234567898591234567' , 1, '201106', '201606','1234',235674.81,'vigente');
+
+
+
+
 
 --COMERCIOS
 insert into comercio values(1,'Anubis','Av. Pres. Juan Domingo Peron 3497','1613','4463-5343');
@@ -172,18 +178,3 @@ insert into comercio values(17,'McDonald´s','Av. Pres. Juan Domingo Peron 983',
 insert into comercio values(18,'M 58','Charlone 1201','1663','4667-4532');
 insert into comercio values(19,'Cine Hoyts Unicenter','Parana 3745','1640','4717-8109');
 insert into comercio values(20,'Solo Deportes','Av. Pres. Juan Domingo Peron 1317','1663','4667-3453');
-
-
-
---TARJETAS
-insert into tarjeta values('1234567898591234567' , 1, '201106', '201606','1234',235674.81,vigente
-
-
-nrotarjeta   char(12),
-	nrocliente   integer,
-	validadesde  char(6), --e.g 201106
-	validahasta  char(6),
-	codseguridad char(4),
-	limitecompra decimal(8,2),
-	estado       char(10) --'vigente', 'suspendida', 'anulada'
-);

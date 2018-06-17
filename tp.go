@@ -114,7 +114,9 @@ func main() {
 	defer db.Close()
 
 	var n int
-	fmt.Printf("Enter 1 to create database: ")
+	fmt.Printf("Enter 1 to create database: \n")
+	fmt.Printf("Enter 2 to create tables: \n")
+
 	fmt.Scanf("%d", &n)
 	if n == 1 {
 		crearDB()
