@@ -8,6 +8,28 @@ import (
 	_ "github.com/lib/pq"
 )
 
+func inicio(db *sql.DB) {
+	var n int
+	i := 0
+	for i < 2 {
+		if i == 0 {
+			fmt.Printf("Enter 1 to create database: \n")
+			fmt.Scanf("%d", &n)
+			if n == 1 {
+				crearDB()
+			}
+		}
+
+		if i == 1 {
+			fmt.Printf("Enter 2 to create tables: \n")
+			if n == 2 {
+				crearTablas(db)
+			}
+		}
+	}
+
+}
+
 func crearTablas(db *sql.DB) {
 	_, err := db.Exec(`create table cliente(
 	nrocliente integer,
@@ -112,17 +134,18 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
+	inicio(db)
 
-	var n int
-	fmt.Printf("Enter 1 to create database: \n")
-	fmt.Printf("Enter 2 to create tables: \n")
+	//var n int
+	//fmt.Printf("Enter 1 to create database: \n")
+	//fmt.Printf("Enter 2 to create tables: \n")
 
-	fmt.Scanf("%d", &n)
-	if n == 1 {
-		crearDB()
-	} else if n == 2 {
-		crearTablas(db)
-	}
+	//fmt.Scanf("%d", &n)
+	//if n == 1 {
+	//	crearDB()
+	//} else if n == 2 {
+	//	crearTablas(db)
+	//}
 
 	// fmt.Printf(tablas(1))
 }

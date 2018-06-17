@@ -12,7 +12,7 @@ create table cliente(
 );
 
 create table tarjeta(
-	nrotarjeta   char(12),
+	nrotarjeta   char(16),
 	nrocliente   integer,
 	validadesde  char(6), --e.g 201106
 	validahasta  char(6),
@@ -48,7 +48,7 @@ create table rechazo(
 );
 
 create table cierre(
-	anio         integer,
+	anio        integer,
 	mes         integer,
 	terminacion integer,
 	fechainicio date,
@@ -56,7 +56,7 @@ create table cierre(
 );
 
 create table cabecera(
-	nroresumen  integer,
+	nroresumen integer,
 	nombre     varchar(64),
 	apellido   varchar(64),
 	domicilio  varchar(64),
@@ -77,10 +77,10 @@ create table detalle(
 
 create table alerta(
 	nroalerta   integer,
-	nrotarjeta  char(16), fk alter table alerta add constraint alerta_fk0  foreing key (nrotarjeta) references tarjeta (nrotarjeta);
+	nrotarjeta  char(16), 
 	fecha       timestamp,
-	nrorechazo  integer;fk
-	codalerta   integer --0:rechazo, 1:compra 1min, 5:compra 5min, 32:límite
+	nrorechazo  integer,
+	codalerta   integer, --0:rechazo, 1:compra 1min, 5:compra 5min, 32:límite
 	descripcion  varchar(64)
 );
 
@@ -88,7 +88,7 @@ create table alerta(
 -- poder probar las funciones.
 
 create table consumo(
-	nrotarjeta 	char(16),
+	nrotarjeta 	    char(16),
 	codseguridad	char(4),
 	nrocomercio 	integer,
 	monto        	decimal(7,2)
@@ -109,13 +109,11 @@ alter table tarjeta  add constraint tarjeta_pk   primary key (nrotarjeta);
 alter table comercio add constraint comercio_pk  primary key (nrocomercio);
 alter table compra   add constraint compra_pk    primary key (nrooperacion);
 alter table rechazo  add constraint rechazo_pk   primary key (nrorechazo);
-alter table cierre   add constraint cierre_pk    primary key (anio,mes,terminacion);
---alter table cierre add constraint cierre_pk1   primary key (mes);
---alter table cierre  add constraint cierre_pk2   primary key (terminacion);
+--alter table cierre   add constraint cierre_pk    primary key (anio,mes,terminacion);
+--alter table cierre   add constraint cierre_pk    primary key (mes,terminacion);
 alter table cabecera add constraint cabecera_pk  primary key (nroresumen);
-alter table detalle  add constraint detalle_pk   primary key (nroresumen,nrolinea);
---alter table detalle add constraint cabecera_pk1 primary key (nrolinea);
-alter table alerta add constraint alerta_pk primary key (nroalerta);
+--alter table detalle  add constraint detalle_pk   primary key (nroresumen,nrolinea);
+alter table alerta   add constraint alerta_pk    primary key (nroalerta);
 
 --FOREIGN KEY
 alter table tarjeta  add constraint tarjeta_fk0 foreign key (nrocliente)  references cliente  (nrocliente);
@@ -124,7 +122,7 @@ alter table compra   add constraint compra_fk1  foreign key (nrocomercio) refere
 alter table rechazo  add constraint rechazo_fk0 foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
 alter table rechazo  add constraint rechazo_fk1 foreign key (nrocomercio) references comercio (nrocomercio);
 alter table cabecera add constraint cabecera_fk foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
-
+alter table alerta   add constraint alerta_fk0  foreign key (nrotarjeta)  references tarjeta (nrotarjeta);
 
 --INSERCION DE DATOS
 
@@ -151,7 +149,7 @@ insert into cliente values(19, 'Fiona', 'Las Margaritas 484', '4895-7939');
 insert into cliente values(20,'Evan', 'Peters', 'Irigoin 296',' 4664-1640');
 
 	--TARJETAS
-	insert into tarjeta values('1234567898591234567' , 1, '201106', '201606','1234',235674.81,'vigente');
+	insert into tarjeta values('1234567890123456' , 1, '201106', '201606','1234',235674.81,'vigente');
 
 
 
