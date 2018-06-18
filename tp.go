@@ -2,33 +2,12 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 
 	_ "github.com/lib/pq"
 )
 
-func inicio(db *sql.DB) {
-	var n int
-	i := 0
-	for i < 2 {
-		if i == 0 {
-			fmt.Printf("Enter 1 to create database: \n")
-			fmt.Scanf("%d", &n)
-			if n == 1 {
-				crearDB()
-			}
-		}
 
-		if i == 1 {
-			fmt.Printf("Enter 2 to create tables: \n")
-			if n == 2 {
-				crearTablas(db)
-			}
-		}
-	}
-
-}
 
 func crearTablas(db *sql.DB) {
 	_, err := db.Exec(`create table cliente(
@@ -124,6 +103,29 @@ func crearDB() {
 
 	//Exec para crear la DB tp2
 	_, err = db.Exec(`create database tp2;`)
+
+}
+//prueba no sirve haha!
+func creatodojunto(db *sql.DB) {
+	var n int
+	
+	for i := 0; i < 2; i++ { {
+		if i == 0 {
+			fmt.Printf("Enter 1 to create database: \n")
+			fmt.Scanf("%d", &n)
+			if n == 1 {
+				crearDB()
+			}
+		}
+
+		if i == 1 {
+			fmt.Printf("Enter 2 to create tables: \n")
+			if n == 2 {
+				crearTablas(db)
+			}
+		}
+		i++
+	}
 
 }
 

@@ -1,18 +1,24 @@
 
-create or replace function autorizar_compra(nrotarjeta_c char(16),codseguridad_c char(4),nrocomercio integer, monto decimal(7,2)) returns boolean as $$
+create or replace function autorizar_compra(nrotarjeta_c char(16),codseguridad_c
+char(4),nrocomercio integer, monto decimal(7,2)) returns boolean as $$
 declare
 vigente record;
-rechazo record;
+codsegu record;
 begin
 	select * into vigente from tarjeta where tarjeta.nrotarjeta=nrotarjeta_c;
 	if not found then
-		raise exception '?tarjeta no valida o no vigente';
-	
+		insert into rechazo values(nrorechazo, nrotarjeta_c, nrcomercio, fecha, monto, '?tarjeta no valida o no vigente');
+
+
 	else
-		select * into rechazo from tarjeta where tarjeta.codseguridad=codseguridad_c;
+		select * into codsegu from tarjeta where tarjeta.codseguridad=codseguridad_c;
 		if not found then
-			raise exception '?codigo de seguridad invalido';
+		insert into rechazo values(new.nrorechazo, nrotarjeta_c, nrcomercio, new.fecha, monto, '?codigo de seguridad invalido');
+
 		end if;
+    else
+        select * into 
+
 
 	end if;
 end;
