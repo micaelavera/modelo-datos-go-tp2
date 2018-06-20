@@ -1,26 +1,44 @@
 
-create or replace function autorizar_compra(nrotarjeta_c char(16),codseguridad_c
+create or replace function autorizar_compra(nro_tarjeta char(16),cod_seguridad
 char(4),nrocomercio integer, monto decimal(7,2)) returns boolean as $$
 declare
-vigente record;
-codsegu record;
+	autorizar record;
+	fecha timestamp;
 begin
-	select * into vigente from tarjeta where tarjeta.nrotarjeta=nrotarjeta_c;
+	select * into autorizar from tarjeta t where t.nrotarjeta=nro_tarjeta and t.estado='vigente';
+	
 	if not found then
-		insert into rechazo values(nrorechazo, nrotarjeta_c, nrcomercio, fecha, monto, '?tarjeta no valida o no vigente');
-
-
+		insert into rechazo values(default, nrotarjeta, nrocomercio,current_date, monto,'?tarjeta no valida o no vigente');
 	else
-		select * into codsegu from tarjeta where tarjeta.codseguridad=codseguridad_c;
+		select * into autorizar from tarjeta t where t.codseguridad=cod_seguridad;
 		if not found then
-		insert into rechazo values(new.nrorechazo, nrotarjeta_c, nrcomercio, new.fecha, monto, '?codigo de seguridad invalido');
+			insert into rechazo values(default, nro_tarjeta, nrocomercio,fecha, monto, '?codigo de seguridad invalido');
 
+	    else
+        	select sum(monto) as deuda into autorizar from tarjeta t, compra c where c.nrotarjeta=t.nrotarjeta and c.pagado=false; --falta el monto de la compra actual
+			if deuda+monto>t.limitecompra then
+				insert into rechazo values(nrorechazo,nro_tarjeta,nrocomercio,fecha,'?supera limite de tarjeta');
+			
+			else
+				select * into autorizar from tarjeta t where t.nrotarjeta=nro_tarjeta and t.estado='anulada';
+				if not found then
+					insert into rechazo values(nrorechazo, nro_tarjeta,nrocomercio,fecha,'?plazo de vigencia expirado');
+				else
+					select *  into autorizar from tarjeta t where t.nrotarjeta=nro_tarjeta and t.nrotarjeta='suspendida';
+					if not found then
+
+						insert into rechazo values(nrorechazo, nro_tarjeta,nrocomercio,fecha,'?la tarjeta se encuentra suspendida');
+
+					else 
+						return true;
+						insert into compra values(1,nro_tarjeta,nrocomercio,fecha,monto,true);
+
+				end if;
+				end if;
+			end if;
 		end if;
-    else
-        select * into 
-
-
-	end if;
+	end if;	
+	return false;
 end;
 $$language plpgsql;
 

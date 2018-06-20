@@ -39,7 +39,7 @@ create table compra(
 );
 
 create table rechazo(
-	nrorechazo  integer,
+	nrorechazo  serial,
 	nrotarjeta  char(16),
 	nrocomercio integer,
 	fecha       timestamp,
