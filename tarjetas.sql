@@ -30,7 +30,7 @@ create table comercio(
 );
 
 create table compra(
-	nrooperacion integer,
+	nrooperacion serial,
 	nrotarjeta   char(16),
 	nrocomercio  integer,
 	fecha        timestamp,
@@ -119,7 +119,7 @@ alter table alerta   add constraint alerta_pk    primary key (nroalerta);
 alter table tarjeta  add constraint tarjeta_fk0 foreign key (nrocliente)  references cliente  (nrocliente);
 alter table compra   add constraint compra_fk0  foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
 alter table compra   add constraint compra_fk1  foreign key (nrocomercio) references comercio (nrocomercio);
-alter table rechazo  add constraint rechazo_fk0 foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
+--alter table rechazo  add constraint rechazo_fk0 foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
 alter table rechazo  add constraint rechazo_fk1 foreign key (nrocomercio) references comercio (nrocomercio);
 alter table cabecera add constraint cabecera_fk foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
 alter table alerta   add constraint alerta_fk0  foreign key (nrotarjeta)  references tarjeta (nrotarjeta);
