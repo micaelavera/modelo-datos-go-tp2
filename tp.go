@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-
 	_ "github.com/lib/pq"
+	"time"
 )
 
 func CrearTablas(db *sql.DB) {
@@ -135,6 +135,7 @@ func CrearDB() {
 	_, err = db.Exec(`create database tp2;`)
 
 }
+
 
 func LeerDatosUsuario(db *sql.DB) {
 	var n int

@@ -76,7 +76,7 @@ create table detalle(
 );
 
 create table alerta(
-	nroalerta   integer,
+	nroalerta  serial,
 	nrotarjeta  char(16), 
 	fecha       timestamp,
 	nrorechazo  integer,
