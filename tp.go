@@ -2,9 +2,10 @@ package main
 
 import (
 	"database/sql"
-	"log"
-	_ "github.com/lib/pq"
 	"fmt"
+	"log"
+
+	_ "github.com/lib/pq"
 )
 
 func CrearTablas(db *sql.DB) {
@@ -91,6 +92,39 @@ create table consumo(
 	}
 
 }
+func agregarPks(db *sql.DB) {
+	_, err := db.Exec(`--PRIMARY KEY
+		alter table cliente  add constraint cliente_pk   primary key (nrocliente);
+		alter table tarjeta  add constraint tarjeta_pk   primary key (nrotarjeta);
+		alter table comercio add constraint comercio_pk  primary key (nrocomercio);
+		alter table compra   add constraint compra_pk    primary key (nrooperacion);
+		alter table rechazo  add constraint rechazo_pk   primary key (nrorechazo);
+		alter table cierre   add constraint cierre_pk    primary key (anio,mes,terminacion);
+		alter table cierre   add constraint cierre_pk    primary key (mes,terminacion);
+		alter table cabecera add constraint cabecera_pk  primary key (nroresumen);
+		alter table detalle  add constraint detalle_pk   primary key (nroresumen,nrolinea);
+		alter table alerta   add constraint alerta_pk    primary key (nroalerta);
+		`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+}
+func agregarFKs(db *sql.DB) {
+	_, err := db.Exec(`	--FOREIGN KEY
+		alter table tarjeta  add constraint tarjeta_fk0 foreign key (nrocliente)  references cliente  (nrocliente);
+		alter table compra   add constraint compra_fk0  foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
+		alter table compra   add constraint compra_fk1  foreign key (nrocomercio) references comercio (nrocomercio);
+		alter table rechazo  add constraint rechazo_fk0 foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
+		alter table rechazo  add constraint rechazo_fk1 foreign key (nrocomercio) references comercio (nrocomercio);
+		alter table cabecera add constraint cabecera_fk foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
+		alter table alerta   add constraint alerta_fk0  foreign key (nrotarjeta)  references tarjeta (nrotarjeta);
+		`)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 
 func CrearDB() {
 	db, err := sql.Open("postgres", "user = postgres dbname = postgres sslmode=disable")
@@ -103,6 +137,7 @@ func CrearDB() {
 	_, err = db.Exec(`create database tp2;`)
 
 }
+
 //prueba no sirve haha!
 func LeerDatosUsuario(db *sql.DB) {
 	var n int
@@ -115,16 +150,21 @@ func LeerDatosUsuario(db *sql.DB) {
 
 	if n == 1 {
 		CrearDB()
-		
-	fmt.Printf("Creando database ... \n")
-	
-	}else if n == 2 {
+
+		fmt.Printf("Creando database ... \n")
+
+	} else if n == 2 {
 		CrearTablas(db)
 		fmt.Printf("Creando las tablas ...\n")
+	} else if n == 3 {
+		agregarPKs(db)
+		fmt.Printf("Creando las  Primary Keys ...\n")
+	} else if n == 4 {
+		agregarFKs(db)
+		fmt.Printf("Creando  las Foreign Keys ...\n")
 	}
-	
-}
 
+}
 
 func main() {
 
@@ -133,15 +173,15 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	
-	var salir=false
-	for !salir{
+
+	var salir = false
+	for !salir {
 		LeerDatosUsuario(db)
 		var respuesta string
 		fmt.Printf("¿Desea seguir en la aplicacion S/N?. Respuesta: \n")
-		fmt.Scanf("%s",&respuesta)
-		if respuesta=="N"|| respuesta=="n"{
-			salir=true
+		fmt.Scanf("%s", &respuesta)
+		if respuesta == "N" || respuesta == "n" {
+			salir = true
 		}
 
 	}
