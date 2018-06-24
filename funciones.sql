@@ -1,40 +1,40 @@
 
-create or replace function autorizar_compra(nro_tarjeta char(16), cod_seguridad
-char(4), nrocomercio integer, monto_c decimal(7,2)) returns boolean as $$
+create or replace function autorizar_compra(nro_tarjeta char(16), cod_seguridad char(4), nrocomercio integer, monto decimal(7,2)) returns boolean as $$
 declare
 	autorizar record;
+	pendientes decimal;
 begin
-/*
 	select * into autorizar from tarjeta t where t.nrotarjeta = nro_tarjeta and t.estado= 'vigente';
 	if not found then
-		insert into rechazo values(default, nro_tarjeta, nrocomercio, current_timestamp, monto_c,'?tarjeta no valida o no vigente');
+		insert into rechazo values(default, nro_tarjeta, nrocomercio, current_timestamp, monto,'?tarjeta no valida o no vigente');
 	else
 		select * into autorizar from tarjeta t where t.codseguridad = cod_seguridad;
 		if not found then
-			insert into rechazo values(default, nro_tarjeta, nrocomercio,current_timestamp, monto_c, '?codigo de seguridad invalido');
+			insert into rechazo values(default, nro_tarjeta, nrocomercio,current_timestamp, monto, '?codigo de seguridad invalido');
 	    else
-	
-       	select sum(c.monto) as deuda into autorizar from tarjeta t, compra c where c.nrotarjeta=t.nrotarjeta and c.pagado=false; --falta el monto de la compra actual
-			if monto>t.limitecompra then
-				insert into rechazo values(default, nro_tarjeta,nrocomercio,current_timestamp,'?supera limite de tarjeta');
+  
+			select sum(c.monto) as deuda into autorizar from compra c where c.nrotarjeta=nro_tarjeta and c.pagado=false;
+			pendientes:=autorizar.deuda;
+
+			if pendientes+monto > (select limitecompra from tarjeta t where t.nrotarjeta=nro_tarjeta) then
+				insert into rechazo values(default, nro_tarjeta,nrocomercio,current_timestamp,monto,'?supera limite de tarjeta');
 			else
 				select * into autorizar from tarjeta t where t.nrotarjeta=nro_tarjeta and t.estado='anulada';
 				if found then
-					insert into rechazo values(default, nro_tarjeta,nrocomercio,current_timestamp,monto_c,'?plazo de vigencia expirado');
+					insert into rechazo values(default, nro_tarjeta,nrocomercio,current_timestamp,monto,'?plazo de vigencia expirado');
 				else
 					select * into autorizar from tarjeta t where t.nrotarjeta=nro_tarjeta and t.estado='suspendida';
 					if found then						
-						insert into rechazo values(default, nro_tarjeta,nrocomercio,current_timestamp,monto_c,'?la tarjeta se encuentra suspendida');
-					else 
-*/					
-						insert into compra values(default, nro_tarjeta,nrocomercio,current_timestamp, monto_c, true);
+						insert into rechazo values(default, nro_tarjeta,nrocomercio,current_timestamp,monto,'?la tarjeta se encuentra suspendida');
+					else 	
+						insert into compra values(default, nro_tarjeta,nrocomercio,current_timestamp, monto,false);
 						return true;		
---		end if;
---		end if;
---		end if;
---	end if;
---	end if;	
---	return false;
+					end if;
+				end if;
+			end if;
+		end if;
+	end if;	
+return false;
 end;
 $$language plpgsql;
 
