@@ -8,6 +8,18 @@ import (
 	"time"
 )
 
+func CrearDB() {
+	db, err := sql.Open("postgres", "user = postgres dbname = postgres sslmode=disable")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	//Exec para crear la DB tp2
+	_, err = db.Exec(`create database tp2;`)
+
+}
+
 func CrearTablas(db *sql.DB) {
 	_, err := db.Exec(`create table cliente(
 	nrocliente integer,
@@ -124,17 +136,6 @@ func AgregarFKs(db *sql.DB) {
 	}
 }
 
-func CrearDB() {
-	db, err := sql.Open("postgres", "user = postgres dbname = postgres sslmode=disable")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-
-	//Exec para crear la DB tp2
-	_, err = db.Exec(`create database tp2;`)
-
-}
 
 func AlertarClientes_1min(){
 	for{
