@@ -64,15 +64,16 @@ end;
 
 $$language plpgsql;
 
-
+-- si una tarjeta registra dos rechazos por exceso de limite en el mismo dia,
+--la tarjeta debe ser suspendida preventivamente
 create or replace function alertar_cliente_rechazos(nro_tarjeta char(16)) returns void as $$
 declare
 	alertar record;
 
 begin
-	select * into alertar from rechazo r where r.nrotarjeta=nro_tarjeta and r.fecha 
-
-	if not found then
+--	select * into alertar from rechazo r where r.nrotarjeta=nro_tarjeta and r.fecha --falta seguir
+	--
+--	update from tarjeta set estado='suspendida' where ...;
 	
 end;
 
