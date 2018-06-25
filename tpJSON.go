@@ -8,12 +8,20 @@ import (
 	"strconv"
 )
 
+type Alumno struct {
+	Legajo int
+	Nombre string
+	Apellido string
+}
+
+
+/*
 type Cliente struct {
 	NroCliente int
 	Nombre string
 	Apellido string
 	Domicilio string
-	telefono char(12)
+	Telefono string
 }
 
 type Tarjeta struct{
@@ -27,19 +35,27 @@ type Tarjeta struct{
 }
 
 var clientes = []Cliente{
-	{NroCliente=1, Nombre: , Apellido
+	{NroCliente:1, Nombre: "Jose", Apellido: "Argento", Domicilio: "Godoy Cruz 1064", Telefono: "4584-3863"},
+	{NroCliente: 2, Nombre: "Mercedes", Apellido: "Benz", Domicilio: "Pte Peron 1223", Telefono: "4665-89892"},
+	{NroCliente: 3, Nombre: "Megan", Apellido: "Ocaranza", Domicilio: "Tribulato 2345", Telefono: "4500-7651"}
+}
 
-func CreateUpdate(db *bolt.DB, bucketName string,key []byte, val []byte) error {
+var tarjetas = []Tarjeta{
+	
+}
+*/
+
+func CreateUpdate(db *bolt.DB, bucketName string, key []byte, val []byte) error {
 	//abre la transaccion de escritura
-	tx, err := db.Begin (true)
+	tx, err := db.Begin(true)
 	if err != nil {
 		return err
 	}
 	defer tx.Rollback()
 
-	b, _:=tx.CreateBucketIfNotExists([]byte(bucketName))
+	b, _ := tx.CreateBucketIfNotExists([]byte(bucketName))
 
-	err=b.Put(key, val)
+	err = b.Put(key, val)
 	if err != nil {
 		return err
 	}
@@ -58,7 +74,7 @@ func ReadUnique (db *bolt.DB, bucketName string, key []byte)([]byte, error) {
 
 	//abre una transaccion de lectura
 	err := db.View(func(tx *bolt.Tx) error {
-		b:=tx.Bucketb := tx.Bucket([]byte(bucketName))
+		b := tx.Bucket([]byte(bucketName))
 		buf = b.Get(key)
 		return nil
 	})
