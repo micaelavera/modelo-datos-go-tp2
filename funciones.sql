@@ -56,6 +56,27 @@ create or replace function alertar_clientes_1min(nro_tarjeta char(16)) returns v
 	end;
 $$language plpgsql;
 
+create or replace function alertar_clientes_5min(nrotarjeta char(16)) returns void as $$
+declare
+begin
+
+end;
+
+$$language plpgsql;
+
+
+create or replace function alertar_cliente_rechazos(nro_tarjeta char(16)) returns void as $$
+declare
+	alertar record;
+
+begin
+	select * into alertar from rechazo r where r.nrotarjeta=nro_tarjeta and r.fecha 
+
+	if not found then
+	
+end;
+
+$$language plpgsql;
 
 
 /*
