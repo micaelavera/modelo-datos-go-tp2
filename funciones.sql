@@ -1,4 +1,3 @@
-
 create or replace function autorizar_compra(nro_tarjeta char(16), cod_seguridad char(4), nrocomercio integer, monto decimal(7,2)) returns boolean as $$
 declare
 	autorizar record;
@@ -77,6 +76,53 @@ begin
 	
 end;
 
+$$language plpgsql;
+
+
+
+create or replace function genererar_resumen(cliente integer,a integer, m integer) returns void as $$
+declare
+	numerotarjeta text;
+	tertarjeta text;
+	resultado record;
+	datoscliente record;
+	totalcompra decimal;
+	cantidadproductos int;
+	datoscomercio record;
+	i int;
+	resumen int;
+	
+begin
+	--obtengo numero de tarjeta
+	select t.nrotarjeta into numerotarjeta from tarjeta t,cliente cl where t.nrocliente=cl.nrocliente and cliente=cl.nrocliente;
+	--obtengo la terminacion de la tarjeta
+	select substring(numerotarjeta,16) into tertarjeta from tarjeta t where t.nrotarjeta=numerotarjeta;
+	
+	select * into resultado from cierre c where tertarjeta=cast(c.terminacion as char(10)) and c.anio=a and c.mes=m;
+	
+	--obtengo datos del cliente
+	select nombre,apellido,domicilio into datoscliente from cliente c,tarjeta t where cliente=c.nrocliente and t.nrocliente=cliente and t.nrotarjeta=numerotarjeta;
+		
+	--cantidad de productos comprados
+	select count(nrooperacion) into cantidadproductos from compra c where c.nrotarjeta=numerotarjeta;
+	
+	--total a pagar
+	for i in 1..cantidadproductos loop
+		select sum(co.monto) into totalcompra from compra co;	
+	end loop;
+	
+	insert into cabecera values (default,datoscliente.nombre,datoscliente.apellido,datoscliente.domicilio,
+		numerotarjeta,resultado.fechainicio,resultado.fechacierre,resultado.fechavto,totalcompra);
+		
+	select nroresumen into resumen from cabecera;
+	
+	for i in 1..cantidadproductos loop
+		select c.nombre,co.fecha,co.monto into datoscomercio from comercio c,compra co 
+			where co.nrooperacion=i and c.nrocomercio=co.nrocomercio and co.nrotarjeta=numerotarjeta;
+		insert into detalle values(resumen,i,datoscomercio.fecha,datoscomercio.nombre,datoscomercio.monto);
+	end loop;	
+	
+end;
 $$language plpgsql;
 
 
