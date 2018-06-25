@@ -8,12 +8,26 @@ import (
 	"strconv"
 )
 
-
-type Alumno struct {
-	Legajo int
+type Cliente struct {
+	NroCliente int
 	Nombre string
 	Apellido string
+	Domicilio string
+	telefono char(12)
 }
+
+type Tarjeta struct{
+	NroTarjeta char(16)
+	NroCliente int
+	ValidaDese char(6)
+	ValidaHasta char(6)
+	CodSeguridad char(4)
+	LimiteCompra decimal(8,2)
+	Estado char(10)
+}
+
+var clientes = []Cliente{
+	{NroCliente=1, Nombre: , Apellido
 
 func CreateUpdate(db *bolt.DB, bucketName string,key []byte, val []byte) error {
 	//abre la transaccion de escritura
@@ -51,6 +65,8 @@ func ReadUnique (db *bolt.DB, bucketName string, key []byte)([]byte, error) {
 
 	return buf,err
 }
+
+
 
 func main() {
 	db, err := bolt.Open("guaraní.db", 0600, nil)
