@@ -136,6 +136,19 @@ func CrearDB() {
 
 }
 
+func AlertarClientes_1min(){
+	for{
+		//funcion del alerta al cliente cada minuto
+		time.Sleep(1*time.Minute)
+	}
+}
+
+func AlertarClientes_5min(){
+	for{
+		//funcion del alerta al cliente cada 5 minutos
+		time.Sleep(5 * time.Minute)
+	}
+}
 
 func LeerDatosUsuario(db *sql.DB) {
 	var n int
