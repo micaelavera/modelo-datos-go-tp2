@@ -52,6 +52,7 @@ create table cierre(
 	mes         integer,
 	terminacion integer,
 	fechainicio date,
+	fechacierre date,
 	fechavto    date
 );
 
