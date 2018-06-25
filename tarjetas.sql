@@ -57,7 +57,7 @@ create table cierre(
 );
 
 create table cabecera(
-	nroresumen int,
+	nroresumen serial,
 	nombre     varchar(64),
 	apellido   varchar(64),
 	domicilio  varchar(64),
