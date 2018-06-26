@@ -138,28 +138,30 @@ func AgregarFKs(db *sql.DB) {
 	//Alter table nombredelatabla drop constraint nombre_pk;
 }
 func eliminarPKs(db *sql.DB) {
-	_, err := db.Exec(`alter table tarjeta  add constraint tarjeta_pk   primary key (nrotarjeta);
-	alter table comercio drop constraint comercio_pk  primary key (nrocomercio);
-	alter table compra   drop constraint compra_pk    primary key (nrooperacion);
-	alter table rechazo  drop constraint rechazo_pk   primary key (nrorechazo);
-	alter table cierre   drop constraint cierre_pk    primary key (anio,mes,terminacion);
-	alter table cierre   drop constraint cierre_pk    primary key (mes,terminacion);
-	alter table cabecera drop constraint cabecera_pk  primary key (nroresumen);
-	alter table detalle  drop constraint detalle_pk   primary key (nroresumen,nrolinea);
-	alter table alerta   drop constraint alerta_pk    primary key (nroalerta);`)
+	_, err := db.Exec(`--DROP PRIMARY KEYs
+	alter table tarjeta  drop constraint tarjeta_pk;
+	alter table comercio drop constraint comercio_pk;
+	alter table compra   drop constraint compra_pk;
+	alter table rechazo  drop constraint rechazo_pk;
+	alter table cierre   drop constraint cierre_pk;
+	alter table cierre   drop constraint cierre_pk;
+	alter table cabecera drop constraint cabecera_pk;
+	alter table detalle  drop constraint detalle_pk;
+	alter table alerta   drop constraint alerta_pk;
+	`)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 func eliminarFKs(db *sql.DB) {
-	_, err := db.Exec(`	--FOREIGN KEY
-		alter table tarjeta  drop constraint tarjeta_fk0 foreign key (nrocliente)  references cliente  (nrocliente);
-		alter table compra   drop constraint compra_fk0  foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
-		alter table compra   drop constraint compra_fk1  foreign key (nrocomercio) references comercio (nrocomercio);
-		alter table rechazo  drop constraint rechazo_fk0 foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
-		alter table rechazo  drop constraint rechazo_fk1 foreign key (nrocomercio) references comercio (nrocomercio);
-		alter table cabecera drop constraint cabecera_fk foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
-		alter table alerta   drop constraint alerta_fk0  foreign key (nrotarjeta)  references tarjeta (nrotarjeta);
+	_, err := db.Exec(`	-- DROP FOREIGN KEYs
+		alter table tarjeta  drop constraint tarjeta_fk0;
+		alter table compra   drop constraint compra_fk0;
+		alter table compra   drop constraint compra_fk1;
+		alter table rechazo  drop constraint rechazo_fk0;
+		alter table rechazo  drop constraint rechazo_fk1;
+		alter table cabecera drop constraint cabecera_fk;
+		alter table alerta   drop constraint alerta_fk0;
 		`)
 	if err != nil {
 		log.Fatal(err)
