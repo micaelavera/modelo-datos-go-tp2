@@ -3,17 +3,17 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	bolt "github.com/coreos/bbolt"
 	"log"
 	"strconv"
+
+	bolt "github.com/coreos/bbolt"
 )
 
 type Alumno struct {
-	Legajo int
-	Nombre string
+	Legajo   int
+	Nombre   string
 	Apellido string
 }
-
 
 /*
 type Cliente struct {
@@ -27,11 +27,18 @@ type Cliente struct {
 type Tarjeta struct{
 	NroTarjeta char(16)
 	NroCliente int
-	ValidaDese char(6)
+	ValidaDesde char(6)
 	ValidaHasta char(6)
 	CodSeguridad char(4)
 	LimiteCompra decimal(8,2)
 	Estado char(10)
+}
+type Comercio struct{
+	nrocomercio  integer,
+	nombre       varchar(64),
+	domicilio    varchar(64),
+	codigopostal char(8),
+	telefono     char(12)
 }
 
 var clientes = []Cliente{
@@ -41,7 +48,17 @@ var clientes = []Cliente{
 }
 
 var tarjetas = []Tarjeta{
-	
+	{NroTarjeta:"5703068016463339" ,NroCliente:  1, ValidaDesde:"201106", ValidaHasta:"201606",CodSeguridad:"1234",LimiteCompra:200000.00, Estado:"anulada");
+    {NroTarjeta:"5578153904072665" ,NroCliente:  2, ValidaDesde:"201606", ValidaHasta:"201906",CodSeguridad:"1123",LimiteCompra:200000.00, Estado:"vigente");
+    {NroTarjeta:"5681732770558693" ,NroCliente:  3, ValidaDesde:"201606", ValidaHasta:"201906",CodSeguridad:"1132",LimiteCompra:200000.00, Estado:"vigente");
+}
+var comercios = []Comerco{
+	{nrocomercio:1, nombre: "Anubis",			domicilio: "Av. Pres. Juan Domingo Peron 3497", codigopostal:"1613",telefono:"4463-5343" }
+	{nrocomercio:2, nombre: "Si A La Pizza" ,	domicilio:"25 de Mayo 2502",				 	codigopostal:"1613",telefono:"4463-2314" }
+	{nrocomercio:3, nombre: "Narrow" ,			domicilio:"Av. Pres. Juan Domingo Peron 1420",	codigopostal:"1663",telefono:"4667-7297" }
+
+}
+
 }
 */
 
@@ -64,12 +81,11 @@ func CreateUpdate(db *bolt.DB, bucketName string, key []byte, val []byte) error 
 	if err := tx.Commit(); err != nil {
 		return err
 	}
-	
+
 	return nil
 }
 
-
-func ReadUnique (db *bolt.DB, bucketName string, key []byte)([]byte, error) {
+func ReadUnique(db *bolt.DB, bucketName string, key []byte) ([]byte, error) {
 	var buf []byte
 
 	//abre una transaccion de lectura
@@ -79,10 +95,8 @@ func ReadUnique (db *bolt.DB, bucketName string, key []byte)([]byte, error) {
 		return nil
 	})
 
-	return buf,err
+	return buf, err
 }
-
-
 
 func main() {
 	db, err := bolt.Open("guaraní.db", 0600, nil)
@@ -90,16 +104,16 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	
+
 	cristina := Alumno{1, "Cristina", "Kirchner"}
 	data, err := json.Marshal(cristina)
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	CreateUpdate(db, "alumno", []byte(strconv.Itoa(cristina.Legajo)), data)
-	
+
 	resultado, err := ReadUnique(db, "alumno", []byte(strconv.Itoa(cristina.Legajo)))
-	
+
 	fmt.Printf("%s\n", resultado)
 }
