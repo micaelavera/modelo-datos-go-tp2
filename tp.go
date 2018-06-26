@@ -4,8 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	_ "github.com/lib/pq"
 	"time"
+
+	_ "github.com/lib/pq"
 )
 
 func CrearDB() {
@@ -134,18 +135,46 @@ func AgregarFKs(db *sql.DB) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	//Alter table nombredelatabla drop constraint nombre_pk;
 }
-
-
-func AlertarClientes_1min(){
-	for{
-		//funcion del alerta al cliente cada minuto
-		time.Sleep(1*time.Minute)
+func eliminarPKs(db *sql.DB) {
+	_, err := db.Exec(`alter table tarjeta  add constraint tarjeta_pk   primary key (nrotarjeta);
+	alter table comercio drop constraint comercio_pk  primary key (nrocomercio);
+	alter table compra   drop constraint compra_pk    primary key (nrooperacion);
+	alter table rechazo  drop constraint rechazo_pk   primary key (nrorechazo);
+	alter table cierre   drop constraint cierre_pk    primary key (anio,mes,terminacion);
+	alter table cierre   drop constraint cierre_pk    primary key (mes,terminacion);
+	alter table cabecera drop constraint cabecera_pk  primary key (nroresumen);
+	alter table detalle  drop constraint detalle_pk   primary key (nroresumen,nrolinea);
+	alter table alerta   drop constraint alerta_pk    primary key (nroalerta);`)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+func eliminarFKs(db *sql.DB) {
+	_, err := db.Exec(`	--FOREIGN KEY
+		alter table tarjeta  drop constraint tarjeta_fk0 foreign key (nrocliente)  references cliente  (nrocliente);
+		alter table compra   drop constraint compra_fk0  foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
+		alter table compra   drop constraint compra_fk1  foreign key (nrocomercio) references comercio (nrocomercio);
+		alter table rechazo  drop constraint rechazo_fk0 foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
+		alter table rechazo  drop constraint rechazo_fk1 foreign key (nrocomercio) references comercio (nrocomercio);
+		alter table cabecera drop constraint cabecera_fk foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
+		alter table alerta   drop constraint alerta_fk0  foreign key (nrotarjeta)  references tarjeta (nrotarjeta);
+		`)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
-func AlertarClientes_5min(){
-	for{
+func AlertarClientes_1min() {
+	for {
+		//funcion del alerta al cliente cada minuto
+		time.Sleep(1 * time.Minute)
+	}
+}
+
+func AlertarClientes_5min() {
+	for {
 		//funcion del alerta al cliente cada 5 minutos
 		time.Sleep(5 * time.Minute)
 	}
