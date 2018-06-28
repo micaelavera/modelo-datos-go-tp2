@@ -50,7 +50,7 @@ las alertas:
 == Descripción
 
 En este apartado explicaremos las dificultades que tuvimos a lo largo de
-la realización del trabajo práctico. Al principio, la ejecucion de las funciones nos resultó un poco tediosa, ya que tuvimos problemas co
+la realización del trabajo práctico. Al principio, la ejecucion de las funciones nos resultó un poco tediosa, ya que tuvimos problemas co...........
 
 
 Pensar lo de la ejecución en un determinado tiempo
@@ -67,7 +67,141 @@ funciona.
 
 
 
-== Implementación
+== 1.0Implementación
+
+
+
+== 1.1 Go Database 
+    Realizamos la creación de la database de la siguiente manera:
+
+[source,sql]
+----
+func CrearDB() {
+	db, err := sql.Open("postgres", "user = postgres dbname = postgres sslmode=disable")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	//Exec para crear la DB tp2
+	_, err = db.Exec(`create database tp2;`)
+
+}
+----
+ 
+== 1.2 Go Creación de tablas
+
+[source,sql]
+----
+func CrearTablas(db *sql.DB) {
+	_, err := db.Exec(`create table cliente(
+	nrocliente integer,
+	nombre     varchar(64),
+	apellido   varchar(64),
+	domicilio  varchar(64),
+	telefono   char(12)
+);
+create table tarjeta(
+	nrotarjeta   char(12),
+	nrocliente   integer,
+	validadesde  char(6), --e.g 201106
+	validahasta  char(6),
+	codseguridad char(4),
+	limitecompra decimal(8,2),
+	estado       char(10) --'vigente', 'suspendida', 'anulada'
+);
+create table comercio(
+	nrocomercio  integer,
+	nombre       varchar(64),
+	domicilio    varchar(64),
+	codigopostal char(8),
+	telefono     char(12)
+);
+create table compra(
+	nrooperacion integer,
+	nrotarjeta   char(16),
+	nrocomercio  integer,
+	fecha        timestamp,
+	monto        decimal(7,2),
+	pagado       boolean
+);
+create table rechazo(
+	nrorechazo  integer,
+	nrotarjeta  char(16),
+	nrocomercio integer,
+	fecha       timestamp,
+	monto       decimal(7,2),
+	motivo      varchar(64)
+);
+create table cierre(
+	anio         integer,
+	mes         integer,
+	terminacion integer,
+	fechainicio date,
+	fechavto    date
+);
+create table cabecera(
+	nroresumen  integer,
+	nombre     varchar(64),
+	apellido   varchar(64),
+	domicilio  varchar(64),
+	nrotarjeta char(16),
+	desde      date,
+	hasta      date,
+	vence      date,
+	total      decimal(8,2)
+);
+create table detalle(
+	nroresumen      integer,
+	nrolinea        integer,
+	fecha           date,
+	nombrecomercio  varchar(64),
+	monto           decimal(7,2)
+);
+create table alerta(
+	nroalerta   integer,
+	nrotarjeta  char(16),
+	fecha       timestamp,
+	nrorechazo  integer,
+	codalerta   integer, --0:rechazo, 1:compra 1min, 5:compra 5min, 32:límite
+	descripcion  varchar(64)
+);
+create table consumo(
+	nrotarjeta 	char(16),
+	codseguridad	char(4),
+	nrocomercio 	integer,
+	monto        	decimal(7,2)
+);`)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+}
+
+func AgregarPKs(db *sql.DB) {
+	_, err := db.Exec(`alter table tarjeta  add constraint tarjeta_pk   primary key (nrotarjeta);
+		alter table comercio add constraint comercio_pk  primary key (nrocomercio);
+		alter table compra   add constraint compra_pk    primary key (nrooperacion);
+		alter table rechazo  add constraint rechazo_pk   primary key (nrorechazo);
+		alter table cierre   add constraint cierre_pk    primary key (anio,mes,terminacion);
+		alter table cierre   add constraint cierre_pk    primary key (mes,terminacion);
+		alter table cabecera add constraint cabecera_pk  primary key (nroresumen);
+		alter table detalle  add constraint detalle_pk   primary key (nroresumen,nrolinea);
+		alter table alerta   add constraint alerta_pk    primary key (nroalerta);`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+}
+----
+
+
+
+
+
+
+
 En esta apartado explicaremos la implementación de los stored procedures realizados como los respectivos triggers.
 
 === Autorización de la compra
@@ -102,7 +236,7 @@ La tabla *rechazo* al insertar los datos posee el siguiente formato:
 insert into rechazo values (default,nrocomercio, nrocomercio, fecha, monto, motivo)
 ----
 
-En cambio, si dicha compra está autorizada, se procede a insertar los datos correspondientes en la tabla *compra*.
+En cambio, si dicha compra está autorizada, se procederá{} a insertar los datos correspondientes en la tabla *compra*.
 
 La tabla *compra* al insertar los datos se sigue el siguiente formato:
 
@@ -121,8 +255,8 @@ La función que nombramos anteriormente, cuyo nombre es *autorizacion_compra* po
 
 ----
 
-=== Generación de la factura
-La *generación de la factura* consiste en tomar el numero del cliente y el periodo del año para asi insertar los datos correspondientes en las tablas *cabecera* y *detalle*. Donde en la respectiva tabla se insertaran el nombre, apellido, numero de tarjeta y direccion del cliente, el periodo del resumen, fecha de vencimiento , todas las compras realizadas en el periodo establecido y el total a pagar.
+=== Generación del resumen 
+La *generación del resumen* consiste en tomar el numero del cliente y el periodo del año(año y mes) para asi insertar los datos correspondientes en las tablas *cabecera* y *detalle*. Donde en la respectiva tabla se insertaran el nombre, apellido, numero de tarjeta y direccion del cliente, el periodo del resumen, fecha de vencimiento , todas las compras realizadas en el periodo establecido y el total a pagar.
 
 
 
