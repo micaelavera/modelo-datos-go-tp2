@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"time"
+
 	_ "github.com/lib/pq"
 )
 
@@ -167,7 +168,6 @@ func eliminarFKs(db *sql.DB) {
 	}
 }
 
-
 func AlertarClientes_1min() {
 	for {
 		//funcion del alerta al cliente cada minuto
@@ -216,6 +216,25 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
+
+	/*
+	   	rows, err := db.Query(`select * from alumno`)
+	   if err != nil {
+	   log.Fatal(err)
+	   }
+	   defer rows.Close()
+	   var a alumno
+	   for rows.Next() {
+	   err := rows.Scan(&a.legajo, &a.nombre, &a.apellido)
+	   if err != nil {
+	   log.Fatal(err)
+	   }
+	   fmt.Printf("%v %v %v\n", a.legajo, a.nombre, a.apellido)
+	   }
+	   if err = rows.Err(); err != nil {
+	   log.Fatal(err)
+	   }
+	*/
 
 	var salir = false
 	for !salir {

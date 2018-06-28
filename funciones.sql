@@ -80,7 +80,7 @@ $$language plpgsql;
 
 
 
-create or replace function genererar_resumen(cliente integer,a integer, m integer) returns void as $$
+create or replace function generar_resumen(cliente integer,a integer, m integer) returns void as $$
 declare
 	numerotarjeta text;
 	tertarjeta text;
