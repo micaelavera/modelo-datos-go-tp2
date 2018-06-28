@@ -193,15 +193,16 @@ func LeerDatosUsuario(db *sql.DB) {
 
 	if n == 1 {
 		CrearDB()
-
 		fmt.Printf("Creando database ... \n")
 
 	} else if n == 2 {
 		CrearTablas(db)
 		fmt.Printf("Creando las tablas ...\n")
+
 	} else if n == 3 {
 		AgregarPKs(db)
 		fmt.Printf("Creando las  Primary Keys ...\n")
+	
 	} else if n == 4 {
 		AgregarFKs(db)
 		fmt.Printf("Creando  las Foreign Keys ...\n")
@@ -210,7 +211,6 @@ func LeerDatosUsuario(db *sql.DB) {
 }
 
 func main() {
-
 	db, err := sql.Open("postgres", "user = postgres dbname = tp2 sslmode=disable")
 	if err != nil {
 		log.Fatal(err)

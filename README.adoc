@@ -5,7 +5,7 @@ Liz Moreno López <lilita.moreno@hotmail.com>; Micaela Vera <micavera2010@hotmai
 :source-highlighter: highlight.js
 :tabsize: 4
 
-El presente documento consiste en describir la aplicación CLI realizada en Go siguiendo el diseño de datos relativo a operaciones de tarjetas de crédito. Dicha aplicacion consiste en el que el usuario pueda realizar las siguientes acciones:
+El presente documento consiste en describir la aplicación CLI realizada en Go siguiendo el diseño de datos relativo a operaciones de tarjetas de crédito. Dicha aplicación permitirá que el usuario pueda realizar las siguientes acciones:
 
 - Autorización de la compra
 - Generación de la factura
@@ -61,29 +61,33 @@ funciona.
 
 
 == Implementación
+En esta apartado explicaremos la implementación de los stored procedures realizados como los respectivos triggers.
 
+=== Autorización de la compra
+La *autorización de la compra* consiste en recibir los datos de la tarjeta, es decir, el número de dicha tarjeta y su código de seguridad, el número del comercio y el monto de dicho consumo. 
 
-=== Autorizacion de la compra
-La autorizacion de la compra consiste en recibir los datos de la tarjeta, es decir, el numero de dicha tarjeta y su codigo de seguridad, el numero del comercio y el monto de dicho consumo. Si todos estos datos son correctos, se procedera a autorizar dicha compra,por esto la stored procedure retornara true. En caso de que algun dato sea invalido, devolvera false.
+Para esto, realizamos la función *autorizar_compra* que toma como los parámetros los datos nombrados anteriormente, cuyo valor de retorno será un boolean. Si todos los datos 
+Si todos estos datos son correctos, se procederá a autorizar dicha compra, por esto la función retornara _true_. En caso de que algún dato sea inválido, devolverá _false_.
+
 El procedimiento antes de autorizar dicha compra debe cumplir una serie de elementos:
     
-    - El numero de la tarjeta debe ser existente, y corresponder a alguna tarjeta vigente.
+    - El número de la tarjeta debe ser existente, y corresponder a alguna tarjeta vigente.
     En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?tarjeta no valida o no vigente*.
 
-    - El codigo de seguridad debe ser correcto. 
-    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?codigo de seguridad invalido*.
+    - El código de seguridad debe ser correcto. 
+    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?código de seguridad invalido*.
 
-    - El monto total de compras pendientes de pago mas la compra a realizar no debe superar el limite de compra de la tarjeta.
-    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?supera limite de tarjeta*.
+    - El monto total de compras pendientes de pago más la compra a realizar no debe superar el límite de compra de la tarjeta.
+    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?supera límite de tarjeta*.
 
     - La tarjeta no debe estar vencida. 
     En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?plazo de vigencia expirado*.
 
     - La tarjeta no debe estar suspendida. En caso de que no cumpla ,se debe cargar los datos en la tabla rechazo con el mensaje *?la tarjeta se encuentra suspendida*.
 
-Por esto, como se nombro anteriormente si al menos uno de los parametros es invalido se procedera a insertar los datos de la compra en la tabla rechazo donde se ingresara el numero de la tarjeta, el numero de comercio, el monto, la fecha y el respectivo mensaje del rechazo de dicha compra.
+Por esto, como se nombró anteriormente si al menos uno de los parámetros es inválido se procederá a insertar los datos de la compra en la tabla *rechazo* donde se ingresará el número de la tarjeta, el número de comercio, el monto, la fecha y el respectivo mensaje del motivo del rechazo de dicha compra.
 
-La tabla rechazo posee el siguiente formato:
+La tabla *rechazo* al insertar los datos posee el siguiente formato:
 -
 [source,sql]
 ----
@@ -94,7 +98,17 @@ La funcion que nombramos anteriormente, cuyo nombre es autorizacion_compra:
 
 [source,sql]
 ----
+
+
+
+
 ----
+
+
+
+
+
+
 
 En esta sección se incluye el código fuente correctamente formateado—y
 comentado, si corresponde. Además, por cada fragmento de código

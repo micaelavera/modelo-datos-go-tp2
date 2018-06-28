@@ -50,7 +50,7 @@ create or replace function alertar_clientes_1min(nro_tarjeta char(16)) returns  
 			-- falta la comparacion con el codigopostal
 		select * into alertar from compra c1
 				where not exists(select codigopostal from comercio where c1.nrocomercio=comercio.nrocomercio intersect select codigopostal from comercio where not exists (select 1 from compra c2
-					where c2.nrocomercio=comercio.nrocomercio and c1.nrotarjeta=nro_tarjeta and c2.nrotarjeta=nro_tarjeta))loop 
+					where c2.nrocomercio=comercio.nrocomercio and c1.nrotarjeta=nro_tarjeta and c2.nrotarjeta=nro_tarjeta)) 
 	--	end if;
 	end;
 $$language plpgsql;
