@@ -1,46 +1,48 @@
 package main
 
 import (
-	"encoding/json"
+	//"encoding/json"
 	"fmt"
 	"log"
-	"strconv"
+	//"strconv"
 
 	bolt "github.com/coreos/bbolt"
 )
 
-
 // solo se marshalean los fields publicos
-
  
-type Cliente struct {
-	NroCliente int
-	Nombre string
-	Apellido string
-	Domicilio string
-	Telefono string
+func CrearTablas(db *bolt.DB){
+	type Cliente struct {
+		NroCliente int
+		Nombre string
+		Apellido string
+		Domicilio string
+		Telefono string
+	}
+
+	type Tarjeta struct {
+		NroTarjeta string
+		NroCliente int
+		ValidaDesde string
+		ValidaHasta string
+		CodSeguridad string
+		LimiteCompra int //nose como poner lo de decimal(8,2)
+		Estado string
+	}
+
+	type Comercio struct {
+		Nrocomercio  int
+		Nombre       string
+		Domicilio    string
+		Codigopostal string
+		Telefono     string
 }
-type Tarjeta struct {
-	NroTarjeta char(16)
-	NroCliente int
-	ValidaDesde char(6)
-	ValidaHasta char(6)
-	CodSeguridad char(4)
-	LimiteCompra decimal(8,2)
-	Estado char(10)
-}
-type Comercio struct {
-	Nrocomercio  integer
-	Nombre       varchar(64)
-	Domicilio    varchar(64)
-	Codigopostal char(8)
-	Telefono     char(12)
-}
+
 /*
 var clientes = []Cliente{
 	{NroCliente:1, Nombre: "Jose", Apellido: "Argento", Domicilio: "Godoy Cruz 1064", Telefono: "4584-3863"},
 	{NroCliente: 2, Nombre: "Mercedes", Apellido: "Benz", Domicilio: "Pte Peron 1223", Telefono: "4665-89892"},
-	{NroCliente: 3, Nombre: "Megan", Apellido: "Ocaranza", Domicilio: "Tribulato 2345", Telefono: "4500-7651"}
+	{NroCliente: 3, Nombre: "Megan", Apellido: "Ocaranza", Domicilio: "Tribulato 2345", Telefono: "4500-7651"},
 }
 
 var tarjetas = []Tarjeta{
@@ -55,9 +57,6 @@ var comercios = []Comerco{
 
 }
 */
-
-
-
 
 func CreateUpdate(db *bolt.DB, bucketName string, key []byte, val []byte) error {
 	//abre la transaccion de escritura
@@ -95,8 +94,31 @@ func ReadUnique(db *bolt.DB, bucketName string, key []byte) ([]byte, error) {
 	return buf, err
 }
 
+func LeerDatosUsuario(db *bolt.DB){
+	 var n int
+	 fmt.Printf("Enter 1 para crear las tablas:\n")
+	 fmt.Printf("Enter 2 para insertar los datos:\n")
+	 fmt.Scanf("%d",&n)
+	 if(n == 1){
+		CrearTablas(db);
+	 }else if(n == 2){
+		 InsertarDatos(db)
+	}
+}
+
+
 
 func main() {
+
+	db, err := bolt.Open("tp2.db", 0600, nil)
+
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	defer db.Close()
+
+	LeerDatosUsuario(db);
 
 /*
 	data, err := json.MarshalIndent(clientes,"","    ")
@@ -110,32 +132,19 @@ func main() {
 	if err!=nil {
 		log.Fatalf("JSON unmarshaling failed: %s", err)
 	}
+
 	fmt.Printf("%v\n", personas)
-
-
-
+*/
 }
 
-*/
-
-
-
-
-
-
-
-
-
-
-
-
+/*
 //----------------------------------------
-
 	db, err := bolt.Open("tp2.db", 0600, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
+
 
 	jose := Cliente{1, "Jose", "Argento", "Godoy Cruz 1064", "4584-3863"}
 	data, err := json.Marshal(jose)
@@ -149,4 +158,4 @@ func main() {
 
 	fmt.Printf("%s\n", resultado)
 }
-
+*/
