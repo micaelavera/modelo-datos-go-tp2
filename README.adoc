@@ -67,11 +67,11 @@ funciona.
 
 
 
-== 1.0Implementación
+== Implementación
 
 
 
-== 1.1 Go Database 
+=== Go Database 
     Realizamos la creación de la database de la siguiente manera:
 
 [source,sql]
@@ -89,7 +89,7 @@ func CrearDB() {
 }
 ----
  
-== 1.2 Go Creación de tablas
+=== Go Creación de tablas
 
 [source,sql]
 ----
