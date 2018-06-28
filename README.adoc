@@ -2,7 +2,7 @@
 Liz Moreno López <lilita.moreno@hotmail.com>; Micaela Vera <micavera2010@hotmail.com>; Verónica Juarez <veronicajuarez01@hotmail.com>
 {docdate}. Docentes Hernán Rondelli y Mariano Trigila (COM-01)
 :numbered:
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 :tabsize: 4
 
 El presente documento consiste en describir
@@ -45,11 +45,39 @@ las alertas:
 
 == Descripción
 
+En esta sección pueden incluirse las dificultades que tuvieron, las
+soluciones encontradas, y las decisiones que fueron tomando a lo largo
+del trabajo práctico.
+
+También, se debe incluir una descripción general del programa—cómo
+funciona.
+
+*(Longitud: 3–5 párrafos)*
 
 
 
 == Implementación
 
+En esta sección se incluye el código fuente correctamente formateado—y
+comentado, si corresponde. Además, por cada fragmento de código
+relevante—i.e. función, método, procedimiento—se debe dar una
+descripción general, decir qué hace, y especificar los parámetros que
+toma la función/método/procedimiento, junto con los valores que devuelve
+ó modifica.
+
+_No debería incluirse el código de librerías/frameworks que se
+utilicen—a no ser que sea absolutamente necesario._
+
+*(Longitud: lo que sea necesario)*
+
 
 
 == Conclusiones
+
+Aquí van algunas reflexiones acerca del proceso de desarrollo del
+trabajo realizado, y de los resultados obtenidos. También se debe
+incluir una conclusión final de producto terminado.
+
+Pueden incluirse lecciones aprendidas durante el desarrollo del trabajo.
+
+*(Longitud: 1–3 párrafos)*

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"time"
-
 	_ "github.com/lib/pq"
 )
 
@@ -167,6 +166,8 @@ func eliminarFKs(db *sql.DB) {
 		log.Fatal(err)
 	}
 }
+
+
 func AlertarClientes_1min() {
 	for {
 		//funcion del alerta al cliente cada minuto
