@@ -69,7 +69,7 @@ En este apartado, explicaremos la implementación de la aplicación CLI en Go si
 
 === Go: Database 
 
-    En primer lugar, realizamos la creación de la database de la siguiente manera:
+En primer lugar, realizamos la creación de la database de la siguiente manera:
 
 [source,sql]
 ----
@@ -88,7 +88,7 @@ func CrearDB() {
  
 === Go: Creación de tablas
 
-    La  creación de las tablas se realizó de la siguiente manera:
+La  creación de las tablas se realizó de la siguiente manera:
 
 [source,sql]
 ----
@@ -181,7 +181,7 @@ create table consumo(
 === Go: Creación de las Primary Keys & Foreign Keys
 
 [source,sql]
------
+----
 func AgregarPKs(db *sql.DB) {
 	_, err := db.Exec(`alter table tarjeta  add constraint tarjeta_pk   primary key (nrotarjeta);
 		alter table comercio add constraint comercio_pk  primary key (nrocomercio);
@@ -214,14 +214,12 @@ func AgregarFKs(db *sql.DB) {
 	}
 	
 }
------
+----
 
 === Go: Eliminación de las Primary Keys & Foreign Keys
 
 [source,sql]
 ----
-
-
 func eliminarPKs(db *sql.DB) {
 	_, err := db.Exec(`--DROP PRIMARY KEYs
 	alter table tarjeta  drop constraint tarjeta_pk;
@@ -254,11 +252,17 @@ func eliminarFKs(db *sql.DB) {
 }
 ----
 
+Por otra parte, la inserción de datos de las tablas cliente, tarjeta, comercio y cierre se realizó mediante la funcion *InsertarDatos* con el siguiente formato:
+
+[source,sql]
+----
+func InsertarDatos (db *sql.DB){
+   _,err:=db.Exec(`  insert into cliente values(1,  'José',      'Argento',      'Godoy Cruz 1064',      '4584-3863');`)
+}
+----
 
 
-
-
-En esta apartado explicaremos la implementación de los stored procedures realizados como los respectivos triggers.
+En este apartado explicaremos la implementación de los stored procedures realizados como los respectivos triggers.
 
 === Autorización de la compra
 
