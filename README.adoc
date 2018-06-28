@@ -52,18 +52,6 @@ las alertas:
 En este apartado explicaremos las dificultades que tuvimos a lo largo de
 la realización del trabajo práctico. Al principio, la ejecución de las funciones nos resultó un poco tediosa, ya que tuvimos problemas con la implementación de las funciones como así pensar la resolución del problema de las alertas en un determinado tiempo.
 
-
-En esta sección pueden incluirse las dificultades que tuvieron, las
-soluciones encontradas, y las decisiones que fueron tomando a lo largo
-del trabajo práctico.
-
-También, se debe incluir una descripción general del programa—cómo
-funciona.
-
-*(Longitud: 3–5 párrafos)*
-
-
-
 == Implementación
 En este apartado, explicaremos la implementación de la aplicación CLI en Go siguiendo el modelo de datos de operaciones de tarjeta de crédito.
 
@@ -311,9 +299,44 @@ La función que nombramos anteriormente, cuyo nombre es *autorizacion_compra* po
 [source,sql]
 ----
 
+create or replace function autorizar_compra(nro_tarjeta char(16), cod_seguridad char(4), nrocomercio integer, monto decimal(7,2)) returns boolean as $$
+declare
+	autorizar record;
+	pendientes decimal;
+begin
+	select * into autorizar from tarjeta t where t.nrotarjeta = nro_tarjeta and t.estado= 'vigente';
+	if not found then
+		insert into rechazo values(default, nro_tarjeta, nrocomercio, current_timestamp, monto,'?tarjeta no valida o no vigente');
+	else
+		select * into autorizar from tarjeta t where t.codseguridad = cod_seguridad;
+		if not found then
+			insert into rechazo values(default, nro_tarjeta, nrocomercio,current_timestamp, monto, '?codigo de seguridad invalido');
+	    else
+  
+			select sum(c.monto) as deuda into autorizar from compra c where c.nrotarjeta=nro_tarjeta and c.pagado=false;
+			pendientes:=autorizar.deuda;
 
-
-
+			if pendientes+monto > (select limitecompra from tarjeta t where t.nrotarjeta=nro_tarjeta) then
+				insert into rechazo values(default, nro_tarjeta,nrocomercio,current_timestamp,monto,'?supera limite de tarjeta');
+			else
+				select * into autorizar from tarjeta t where t.nrotarjeta=nro_tarjeta and t.estado='anulada';
+				if found then
+					insert into rechazo values(default, nro_tarjeta,nrocomercio,current_timestamp,monto,'?plazo de vigencia expirado');
+				else
+					select * into autorizar from tarjeta t where t.nrotarjeta=nro_tarjeta and t.estado='suspendida';
+					if found then						
+						insert into rechazo values(default, nro_tarjeta,nrocomercio,current_timestamp,monto,'?la tarjeta se encuentra suspendida');
+					else 	
+						insert into compra values(default, nro_tarjeta,nrocomercio,current_timestamp, monto,false);
+						return true;		
+					end if;
+				end if;
+			end if;
+		end if;
+	end if;	
+return false;
+end;
+$$language plpgsql;
 ----
 
 === Generación del resumen 
@@ -321,17 +344,54 @@ La *generación del resumen* consiste en tomar el numero del cliente y el period
 
 [source,sql]
 ----
-
-
-
-
-
+create or replace function generar_resumen(cliente integer,a integer, m integer) returns void as $$
+declare
+	numerotarjeta text;
+	tertarjeta text;
+	resultado record;
+	datoscliente record;
+	totalcompra decimal;
+	cantidadproductos int;
+	datoscomercio record;
+	i int;
+	resumen int;
+	
+begin
+	--obtengo numero de tarjeta
+	select t.nrotarjeta into numerotarjeta from tarjeta t,cliente cl where t.nrocliente=cl.nrocliente and cliente=cl.nrocliente;
+	--obtengo la terminacion de la tarjeta
+	select substring(numerotarjeta,16) into tertarjeta from tarjeta t where t.nrotarjeta=numerotarjeta;
+	
+	select * into resultado from cierre c where tertarjeta=cast(c.terminacion as char(10)) and c.anio=a and c.mes=m;
+	
+	--obtengo datos del cliente
+	select nombre,apellido,domicilio into datoscliente from cliente c,tarjeta t where cliente=c.nrocliente and t.nrocliente=cliente and t.nrotarjeta=numerotarjeta;
+		
+	--cantidad de productos comprados
+	select count(nrooperacion) into cantidadproductos from compra c where c.nrotarjeta=numerotarjeta;
+	
+	--total a pagar
+	for i in 1..cantidadproductos loop
+		select sum(co.monto) into totalcompra from compra co;	
+	end loop;
+	
+	insert into cabecera values (default,datoscliente.nombre,datoscliente.apellido,datoscliente.domicilio,
+		numerotarjeta,resultado.fechainicio,resultado.fechacierre,resultado.fechavto,totalcompra);
+		
+	select nroresumen into resumen from cabecera;
+	
+	for i in 1..cantidadproductos loop
+		select c.nombre,co.fecha,co.monto into datoscomercio from comercio c,compra co 
+			where co.nrooperacion=i and c.nrocomercio=co.nrocomercio and co.nrotarjeta=numerotarjeta;
+		insert into detalle values(resumen,i,datoscomercio.fecha,datoscomercio.nombre,datoscomercio.monto);
+	end loop;	
+	
+end;
+$$language plpgsql;
 ----
 
 
-
-
-=== Alertas a clientes
+=== Alertas a los clientes
 
 Se debe generar alertas por posibles fraudes. Existe un Call Center que ante cada alerta generada automáticamente, realiza un llamado telefónico al cliente, indicándole la alerta detectada, y verifica
 si se trató de un fraude ó no.
@@ -340,6 +400,20 @@ Como todo rechazo se debe ingresar automáticamente a la tabla de alertas. No pu
 
 Para asegurar esto, realizamos un trigger *generar_alerta()*, cuando se inserta los datos de un rechazo en la tabla *rechazo* se dispara el trigger y se guardan los respectivos datos en la tabla *alerta*.
 
+[source,sql]
+----
+create or replace function generar_alerta()returns trigger as $$
+begin
+	insert into alerta values(new.nroalerta, new.nrotarjeta, new.fecha, new.nrorechazo, new.codalerta, new.descripcion);
+	return new;
+end;
+$$language plpgsql;
+
+create trigger generar_alerta_trigger
+instead of insert on rechazo
+for each row
+execute procedure generar_alerta();
+----
 
 
 == Conclusiones
@@ -348,5 +422,10 @@ Este trabajo práctico se ha realizado con el objetivo de implementar en un nuev
 explicar un modelo de datos relativo a tarjetas de crédito. Para llegar
 a ese objetivo se tuvo que realizar las distintas funciones para cubrir
 con todos los requerimientos solicitados.
+
+
+Para concluir, la ejecución de este trabajo práctico nos resultó complicada, las dificultades no  puedieron ser resueltas.
+
+Estas dificultades diferían en cuanto al concepto de NoSQL y la creación de la funcion de alertas a los clientes en un determinado tiempo.
 
 
