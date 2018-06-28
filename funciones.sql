@@ -40,18 +40,13 @@ $$language plpgsql;
 
 create or replace function alertar_clientes_1min(nro_tarjeta char(16)) returns  text as $$
 	declare 
-		alertar record;
-		codigo text;
-		v text;
+	alertar record;
 	begin
 --		if not found then
 --			insert into alerta values(default,nro_tarjeta, current_timestamp, null, 1,'?dos compras dentro de un minuto');
---		else
-			-- falta la comparacion con el codigopostal
+--		
 		select * into alertar from compra c1
-				where not exists(select codigopostal from comercio where c1.nrocomercio=comercio.nrocomercio intersect select codigopostal from comercio where not exists (select 1 from compra c2
-					where c2.nrocomercio=comercio.nrocomercio and c1.nrotarjeta=nro_tarjeta and c2.nrotarjeta=nro_tarjeta)) 
-	--	end if;
+		end if;
 	end;
 $$language plpgsql;
 
@@ -70,9 +65,11 @@ declare
 	alertar record;
 
 begin
---	select * into alertar from rechazo r where r.nrotarjeta=nro_tarjeta and r.fecha --falta seguir
+	select * into alertar from rechazo r where r.nrotarjeta=nro_tarjeta and r.f
 	--
 --	update from tarjeta set estado='suspendida' where ...;
+
+	insert into alerta values();
 	
 end;
 
@@ -125,8 +122,8 @@ begin
 end;
 $$language plpgsql;
 
-
 /*
+
 create or replace function generar_alerta()returns trigger as $$
 begin
 	insert into alerta values(new.nroalerta, new.nrotarjeta, new.fecha, new.nrorechazo, new.codalerta, new.descripcion);
@@ -138,4 +135,4 @@ create trigger generar_alerta_trigger
 instead of insert on rechazo
 for each row
 execute procedure generar_alerta()
-*/
+/*

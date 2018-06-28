@@ -167,8 +167,14 @@ func eliminarFKs(db *sql.DB) {
 	}
 }
 
+<<<<<<< HEAD
 func InsertarDatos(db *sql.DB) {
 	_, err := db.Exec(`--CLIENTES
+=======
+
+func InsertarDatos(db *sql.DB){
+	_, err :=db.Exec(`--CLIENTES
+>>>>>>> d73f519f2638687b301aacb16712de9dbcdcb650
     insert into cliente values(1,  'José',      'Argento',      'Godoy Cruz 1064',      '4584-3863');
     insert into cliente values(2,  'Mercedes',  'Benz',         'Pte Perón 1223',       '4665-8989');
     insert into cliente values(3,  'Megan',     'Ocaranza',     'Tribulato 2345',       '4500-7651');
@@ -367,6 +373,10 @@ func InsertarDatos(db *sql.DB) {
 		log.Fatal(err)
 	}
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> d73f519f2638687b301aacb16712de9dbcdcb650
 
 func AlertarClientes_1min() {
 	for {
@@ -381,6 +391,54 @@ func AlertarClientes_5min() {
 		time.Sleep(5 * time.Minute)
 	}
 }
+
+
+func AutorizarCompra(db *sql.DB){
+	rows, err := db.Query(`create or replace function autorizar_compra(nro_tarjeta char(16), cod_seguridad char(4), nrocomercio integer, monto decimal(7,2)) returns boolean as $$
+declare
+	autorizar record;
+	pendientes decimal;
+begin
+	select * into autorizar from tarjeta t where t.nrotarjeta = nro_tarjeta and t.estado= 'vigente';
+	if not found then
+		insert into rechazo values(default, nro_tarjeta, nrocomercio, current_timestamp, monto,'?tarjeta no valida o no vigente');
+	else
+		select * into autorizar from tarjeta t where t.codseguridad = cod_seguridad;
+		if not found then
+			insert into rechazo values(default, nro_tarjeta, nrocomercio,current_timestamp, monto, '?codigo de seguridad invalido');
+	    else
+  
+			select sum(c.monto) as deuda into autorizar from compra c where c.nrotarjeta=nro_tarjeta and c.pagado=false;
+			pendientes:=autorizar.deuda;
+
+			if pendientes+monto > (select limitecompra from tarjeta t where t.nrotarjeta=nro_tarjeta) then
+				insert into rechazo values(default, nro_tarjeta,nrocomercio,current_timestamp,monto,'?supera limite de tarjeta');
+			else
+				select * into autorizar from tarjeta t where t.nrotarjeta=nro_tarjeta and t.estado='anulada';
+				if found then
+					insert into rechazo values(default, nro_tarjeta,nrocomercio,current_timestamp,monto,'?plazo de vigencia expirado');
+				else
+					select * into autorizar from tarjeta t where t.nrotarjeta=nro_tarjeta and t.estado='suspendida';
+					if found then						
+						insert into rechazo values(default, nro_tarjeta,nrocomercio,current_timestamp,monto,'?la tarjeta se encuentra suspendida');
+					else 	
+						insert into compra values(default, nro_tarjeta,nrocomercio,current_timestamp, monto,false);
+						return true;		
+					end if;
+				end if;
+			end if;
+		end if;
+	end if;	
+return false;
+end;
+$$language plpgsql; `)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+}
+
 
 func LeerDatosUsuario(db *sql.DB) {
 	var n int
@@ -421,25 +479,6 @@ func main() {
 	}
 	defer db.Close()
 
-	/*
-	   	rows, err := db.Query(`select * from alumno`)
-	   if err != nil {
-	   log.Fatal(err)
-	   }
-	   defer rows.Close()
-	   var a alumno
-	   for rows.Next() {
-	   err := rows.Scan(&a.legajo, &a.nombre, &a.apellido)
-	   if err != nil {
-	   log.Fatal(err)
-	   }
-	   fmt.Printf("%v %v %v\n", a.legajo, a.nombre, a.apellido)
-	   }
-	   if err = rows.Err(); err != nil {
-	   log.Fatal(err)
-	   }
-	*/
-
 	var salir = false
 	for !salir {
 		LeerDatosUsuario(db)
@@ -449,6 +488,5 @@ func main() {
 		if respuesta == "N" || respuesta == "n" {
 			salir = true
 		}
-
 	}
 }
