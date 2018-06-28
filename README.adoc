@@ -1,0 +1,55 @@
+= Bases de Datos I: Trabajo Práctico 2
+Liz Moreno López <lilita.moreno@hotmail.com>; Micaela Vera <micavera2010@hotmail.com>; Verónica Juarez <veronicajuarez01@hotmail.com>
+{docdate}. Docentes Hernán Rondelli y Mariano Trigila (COM-01)
+:numbered:
+:source-highlighter: pygments
+:tabsize: 4
+
+El presente documento consiste en describir
+
+
+== Introducción
+
+Las tarjetas no permiten a los usuarios financiar una compra en cuotas,
+todo se realiza en un solo pago. Una persona puede tener más de una
+tarjeta pero no deben existir extensiones de la misma. Las tarjetas
+podrán estar expiradas en su fecha de vencimiento.
+
+Las tarjetas tendrán consumos que deben surgir a partir de las compras
+que se realicen en los distintos comercios.  También, nos interesan los
+datos de los clientes, de las tarjetas de crédito con sus vencimientos y
+límites, entre otros. 
+
+A partir de los datos de una compra, se puede aceptar o rechazar dicha
+compra. Se debe considerar distintos factores para la autorización de la
+compra; debe existir el número de la tarjeta y corresponder a alguna
+tarjeta vigente, el código de seguridad tiene que ser el correcto, el
+monto total de las compras pendientes de pago más la compra a realizar
+no debe superar el límite de compra de la tarjeta, por último, la
+tarjeta no debe estar vencida ni suspendida.
+
+Para cada nuevo consumo se deben guardar los datos de una factura con el
+nombre y apellido, dirección, número de tarjeta, período de la factura,
+fecha de vencimiento, todas las compras del período, y total a pagar.
+
+Por último, se deben generar alertas por posibles fraudes. Existe un
+Call Center que ante cada alerta generada automáticamente realiza un
+llamado telefónico al cliente, indicándole la alerta detectada y
+verifica si se trató de un fraude ó no.  Se debe tener en cuenta para
+las alertas:
+
+- Si una tarjeta registra dos compras en un lapso menor de un minuto en comercios distintos ubicados en el mismo código postal.
+- Si una tarjeta registra dos compras en un lapso menor de 5 minutos en comercios con diferentes códigos postales.
+- Si una tarjeta registra dos rechazos por exceso de límite en el mismo día, la tarjeta tiene que ser suspendida preventivamente.
+
+
+== Descripción
+
+
+
+
+== Implementación
+
+
+
+== Conclusiones
