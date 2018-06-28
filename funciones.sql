@@ -26,7 +26,7 @@ begin
 					if found then						
 						insert into rechazo values(default, nro_tarjeta,nrocomercio,current_timestamp,monto,'?la tarjeta se encuentra suspendida');
 					else 	
-						insert into compra values(default, nro_tarjeta,nrocomercio,current_timestamp, monto,false);
+						insert into compra values(default, nro_tarjeta,nrocomercio,current_timestamp, monto,true);
 						return true;		
 					end if;
 				end if;

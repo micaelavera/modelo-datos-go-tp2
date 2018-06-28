@@ -1,50 +1,50 @@
 package main
 
 import (
-	//"encoding/json"
+	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	//"strconv"
 
 	bolt "github.com/coreos/bbolt"
 )
 
 // solo se marshalean los fields publicos
- 
-func CrearTablas(db *bolt.DB){
-	type Cliente struct {
-		NroCliente int
-		Nombre string
-		Apellido string
-		Domicilio string
-		Telefono string
-	}
 
-	type Tarjeta struct {
-		NroTarjeta string
-		NroCliente int
-		ValidaDesde string
-		ValidaHasta string
-		CodSeguridad string
-		LimiteCompra int //nose como poner lo de decimal(8,2)
-		Estado string
-	}
-
-	type Comercio struct {
-		Nrocomercio  int
-		Nombre       string
-		Domicilio    string
-		Codigopostal string
-		Telefono     string
+type Cliente struct {
+	NroCliente int
+	Nombre     string
+	Apellido   string
+	Domicilio  string
+	Telefono   string
 }
 
-/*
+type Tarjeta struct {
+	NroTarjeta   string
+	NroCliente   int
+	ValidaDesde  string
+	ValidaHasta  string
+	CodSeguridad string
+	LimiteCompra float32 //nose como poner lo de decimal(8,2)
+	Estado       string
+}
+
+type Comercio struct {
+	Nrocomercio  int
+	Nombre       string
+	Domicilio    string
+	Codigopostal string
+	Telefono     string
+}
+
 var clientes = []Cliente{
-	{NroCliente:1, Nombre: "Jose", Apellido: "Argento", Domicilio: "Godoy Cruz 1064", Telefono: "4584-3863"},
+	{NroCliente: 1, Nombre: "Jose", Apellido: "Argento", Domicilio: "Godoy Cruz 1064", Telefono: "4584-3863"},
 	{NroCliente: 2, Nombre: "Mercedes", Apellido: "Benz", Domicilio: "Pte Peron 1223", Telefono: "4665-89892"},
 	{NroCliente: 3, Nombre: "Megan", Apellido: "Ocaranza", Domicilio: "Tribulato 2345", Telefono: "4500-7651"},
 }
 
+/*
 var tarjetas = []Tarjeta{
 	{NroTarjeta:"5703068016463339" ,NroCliente:  1, ValidaDesde:"201106", ValidaHasta:"201606",CodSeguridad:"1234",LimiteCompra:200000.00, Estado:"anulada");
     {NroTarjeta:"5578153904072665" ,NroCliente:  2, ValidaDesde:"201606", ValidaHasta:"201906",CodSeguridad:"1123",LimiteCompra:200000.00, Estado:"vigente");
@@ -94,68 +94,49 @@ func ReadUnique(db *bolt.DB, bucketName string, key []byte) ([]byte, error) {
 	return buf, err
 }
 
-func LeerDatosUsuario(db *bolt.DB){
-	 var n int
-	 fmt.Printf("Enter 1 para crear las tablas:\n")
-	 fmt.Printf("Enter 2 para insertar los datos:\n")
-	 fmt.Scanf("%d",&n)
-	 if(n == 1){
-		CrearTablas(db);
-	 }else if(n == 2){
-		 InsertarDatos(db)
-	}
-}
-
-
-
 func main() {
 
-	db, err := bolt.Open("tp2.db", 0600, nil)
+	db, err := bolt.Open("postgres.db", 0600, nil)
 
 	if err != nil {
 		log.Fatal(err)
 
 	}
 	defer db.Close()
-
-	LeerDatosUsuario(db);
-
-/*
-	data, err := json.MarshalIndent(clientes,"","    ")
-	if err !=nil {
-		log.Fatalf("JSON marshaling failed: %s", err)
-	}
-	fmt.Printf("%s\n", data)
-	
-	var personas []Cliente
-	err = json.Unmarshal(data, &personas)
-	if err!=nil {
-		log.Fatalf("JSON unmarshaling failed: %s", err)
-	}
-
-	fmt.Printf("%v\n", personas)
-*/
-}
-
-/*
-//----------------------------------------
-	db, err := bolt.Open("tp2.db", 0600, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-
-
 	jose := Cliente{1, "Jose", "Argento", "Godoy Cruz 1064", "4584-3863"}
 	data, err := json.Marshal(jose)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	CreateUpdate(db, "cliente", []byte(strconv.Itoa(jose.NroCliente)), data)
 
 	resultado, err := ReadUnique(db, "cliente", []byte(strconv.Itoa(jose.NroCliente)))
 
 	fmt.Printf("%s\n", resultado)
+
+	//	LeerDatosUsuario(db);
+	/*
+		data, err := json.MarshalIndent(clientes, "", "    ")
+		if err != nil {
+			log.Fatalf("JSON marshaling failed: %s", err)
+		}
+		fmt.Printf("%s\n", data)
+
+		var personas []Cliente
+		err = json.Unmarshal(data, &personas)
+		if err != nil {
+			log.Fatalf("JSON unmarshaling failed: %s", err)
+		}
+
+		fmt.Printf("%v\n", personas)
+
+		/*
+		   //----------------------------------------
+		   	db, err := bolt.Open(".db", 0600, nil)
+		   	if err != nil {
+		   		log.Fatal(err)
+		   	}
+		   	defer db.Close()
+	*/
+
 }
-*/

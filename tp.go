@@ -112,7 +112,6 @@ func AgregarPKs(db *sql.DB) {
 		alter table compra   add constraint compra_pk    primary key (nrooperacion);
 		alter table rechazo  add constraint rechazo_pk   primary key (nrorechazo);
 		alter table cierre   add constraint cierre_pk    primary key (anio,mes,terminacion);
-		alter table cierre   add constraint cierre_pk    primary key (mes,terminacion);
 		alter table cabecera add constraint cabecera_pk  primary key (nroresumen);
 		alter table detalle  add constraint detalle_pk   primary key (nroresumen,nrolinea);
 		alter table alerta   add constraint alerta_pk    primary key (nroalerta);`)
@@ -168,9 +167,8 @@ func eliminarFKs(db *sql.DB) {
 	}
 }
 
-
-func InsertarDatos(db *sql.DB){
-	_, err := (`--CLIENTES
+func InsertarDatos(db *sql.DB) {
+	_, err := db.Exec(`--CLIENTES
     insert into cliente values(1,  'José',      'Argento',      'Godoy Cruz 1064',      '4584-3863');
     insert into cliente values(2,  'Mercedes',  'Benz',         'Pte Perón 1223',       '4665-8989');
     insert into cliente values(3,  'Megan',     'Ocaranza',     'Tribulato 2345',       '4500-7651');
@@ -364,12 +362,11 @@ func InsertarDatos(db *sql.DB){
     insert into cierre values(2018,12,7,'2018-12-19','2019-01-19','2019-01-29');
     insert into cierre values(2018,12,8,'2018-12-22','2019-01-22','2019-01-29');
     insert into cierre values(2018,12,9,'2018-12-25','2019-01-25','2019-02-02');
-`);
+`)
 	if err != nil {
 		log.Fatal(err)
 	}
-}	
-
+}
 
 func AlertarClientes_1min() {
 	for {
@@ -405,7 +402,7 @@ func LeerDatosUsuario(db *sql.DB) {
 	} else if n == 3 {
 		AgregarPKs(db)
 		fmt.Printf("Creando las  Primary Keys ...\n")
-	
+
 	} else if n == 4 {
 		AgregarFKs(db)
 		fmt.Printf("Creando  las Foreign Keys ...\n")
@@ -414,7 +411,6 @@ func LeerDatosUsuario(db *sql.DB) {
 		InsertarDatos(db)
 		fmt.Printf("Insertando datos.. \n")
 	}
-	
 
 }
 
