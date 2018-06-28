@@ -85,13 +85,22 @@ El procedimiento antes de autorizar dicha compra debe cumplir una serie de eleme
 
     - La tarjeta no debe estar suspendida. En caso de que no cumpla ,se debe cargar los datos en la tabla rechazo con el mensaje *?la tarjeta se encuentra suspendida*.
 
-Por esto, como se nombró anteriormente si al menos uno de los parámetros es inválido se procederá a insertar los datos de la compra en la tabla *rechazo* donde se ingresará el número de la tarjeta, el número de comercio, el monto, la fecha y el respectivo mensaje del motivo del rechazo de dicha compra.
+Por esto, como se nombró anteriormente si al menos uno de los parámetros es inválido se procederá a insertar los datos de la compra en la tabla *rechazo* donde se ingresará el número de la tarjeta, el número de comercio, el monto, la fecha y el respectivo mensaje del motivo del rechazo de dicha compra. 
+
 
 La tabla *rechazo* al insertar los datos posee el siguiente formato:
 -
 [source,sql]
 ----
 insert into rechazo values (default,nrocomercio, nrocomercio, fecha, monto, motivo)
+----
+
+En cambio, si dicha compra esta autorizada, se procede a insertar los datos correspondientes en la tabla *compra*.
+
+La tabla *compra* al insertar los datos se sigue el siguiente formato:
+[source,sql]
+----
+insert into compra values()
 ----
 
 La funcion que nombramos anteriormente, cuyo nombre es autorizacion_compra:
