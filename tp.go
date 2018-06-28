@@ -167,14 +167,8 @@ func eliminarFKs(db *sql.DB) {
 	}
 }
 
-<<<<<<< HEAD
 func InsertarDatos(db *sql.DB) {
 	_, err := db.Exec(`--CLIENTES
-=======
-
-func InsertarDatos(db *sql.DB){
-	_, err :=db.Exec(`--CLIENTES
->>>>>>> d73f519f2638687b301aacb16712de9dbcdcb650
     insert into cliente values(1,  'José',      'Argento',      'Godoy Cruz 1064',      '4584-3863');
     insert into cliente values(2,  'Mercedes',  'Benz',         'Pte Perón 1223',       '4665-8989');
     insert into cliente values(3,  'Megan',     'Ocaranza',     'Tribulato 2345',       '4500-7651');
@@ -373,10 +367,6 @@ func InsertarDatos(db *sql.DB){
 		log.Fatal(err)
 	}
 }
-<<<<<<< HEAD
-=======
-
->>>>>>> d73f519f2638687b301aacb16712de9dbcdcb650
 
 func AlertarClientes_1min() {
 	for {
@@ -392,8 +382,7 @@ func AlertarClientes_5min() {
 	}
 }
 
-
-func AutorizarCompra(db *sql.DB){
+func AutorizarCompra(db *sql.DB) {
 	rows, err := db.Query(`create or replace function autorizar_compra(nro_tarjeta char(16), cod_seguridad char(4), nrocomercio integer, monto decimal(7,2)) returns boolean as $$
 declare
 	autorizar record;
@@ -438,7 +427,6 @@ $$language plpgsql; `)
 	}
 	defer rows.Close()
 }
-
 
 func LeerDatosUsuario(db *sql.DB) {
 	var n int

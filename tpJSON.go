@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"strconv"
-	//"strconv"
 
 	bolt "github.com/coreos/bbolt"
 )
@@ -94,6 +93,68 @@ func ReadUnique(db *bolt.DB, bucketName string, key []byte) ([]byte, error) {
 	return buf, err
 }
 
+func Clientes(db *bolt.DB) {
+
+	jose := Cliente{1, "Jose", "Argento", "Godoy Cruz 1064", "4584-3863"}
+	data, err := json.Marshal(jose)
+	if err != nil {
+		log.Fatal(err)
+	}
+	CreateUpdate(db, "cliente", []byte(strconv.Itoa(jose.NroCliente)), data)
+	resultado, err := ReadUnique(db, "cliente", []byte(strconv.Itoa(jose.NroCliente)))
+	fmt.Printf("%s\n", resultado)
+
+	mercedes := Cliente{2, "Mercedes", "Benz", "Pte Peron 1223", "4665-89892"}
+	data2, err := json.Marshal(mercedes)
+	if err != nil {
+		log.Fatal(err)
+	}
+	CreateUpdate(db, "cliente", []byte(strconv.Itoa(mercedes.NroCliente)), data2)
+	resul, err := ReadUnique(db, "cliente", []byte(strconv.Itoa(mercedes.NroCliente)))
+	fmt.Printf("%s\n", resul)
+
+	megan := Cliente{2, "Megan", "Ocaranza", "Tribulato 2345", "4500-7651"}
+	data3, err := json.Marshal(megan)
+	if err != nil {
+		log.Fatal(err)
+	}
+	CreateUpdate(db, "cliente", []byte(strconv.Itoa(megan.NroCliente)), data3)
+	resul3, err := ReadUnique(db, "cliente", []byte(strconv.Itoa(megan.NroCliente)))
+	fmt.Printf("%s\n", resul3)
+
+}
+
+func Tarjetas(db *bolt.DB) {
+
+	jose := Cliente{1, "Jose", "Argento", "Godoy Cruz 1064", "4584-3863"}
+	data, err := json.Marshal(jose)
+	if err != nil {
+		log.Fatal(err)
+	}
+	CreateUpdate(db, "cliente", []byte(strconv.Itoa(jose.NroCliente)), data)
+	resultado, err := ReadUnique(db, "cliente", []byte(strconv.Itoa(jose.NroCliente)))
+	fmt.Printf("%s\n", resultado)
+
+	mercedes := Cliente{2, "Mercedes", "Benz", "Pte Peron 1223", "4665-89892"}
+	data2, err := json.Marshal(mercedes)
+	if err != nil {
+		log.Fatal(err)
+	}
+	CreateUpdate(db, "cliente", []byte(strconv.Itoa(mercedes.NroCliente)), data2)
+	resul, err := ReadUnique(db, "cliente", []byte(strconv.Itoa(mercedes.NroCliente)))
+	fmt.Printf("%s\n", resul)
+
+	megan := Cliente{2, "Megan", "Ocaranza", "Tribulato 2345", "4500-7651"}
+	data3, err := json.Marshal(megan)
+	if err != nil {
+		log.Fatal(err)
+	}
+	CreateUpdate(db, "cliente", []byte(strconv.Itoa(megan.NroCliente)), data3)
+	resul3, err := ReadUnique(db, "cliente", []byte(strconv.Itoa(megan.NroCliente)))
+	fmt.Printf("%s\n", resul3)
+
+}
+
 func main() {
 
 	db, err := bolt.Open("postgres.db", 0600, nil)
@@ -103,17 +164,7 @@ func main() {
 
 	}
 	defer db.Close()
-	jose := Cliente{1, "Jose", "Argento", "Godoy Cruz 1064", "4584-3863"}
-	data, err := json.Marshal(jose)
-	if err != nil {
-		log.Fatal(err)
-	}
-	CreateUpdate(db, "cliente", []byte(strconv.Itoa(jose.NroCliente)), data)
-
-	resultado, err := ReadUnique(db, "cliente", []byte(strconv.Itoa(jose.NroCliente)))
-
-	fmt.Printf("%s\n", resultado)
-
+	Clientes(db)
 	//	LeerDatosUsuario(db);
 	/*
 		data, err := json.MarshalIndent(clientes, "", "    ")
