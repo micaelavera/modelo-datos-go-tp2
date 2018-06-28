@@ -65,23 +65,35 @@ funciona.
 
 === Autorizacion de la compra
 La autorizacion de la compra consiste en recibir los datos de la tarjeta, es decir, el numero de dicha tarjeta y su codigo de seguridad, el numero del comercio y el monto de dicho consumo. Si todos estos datos son correctos, se procedera a autorizar dicha compra,por esto la stored procedure retornara true. En caso de que algun dato sea invalido, devolvera false.
-El procedimiento antes de autorizar dicha compra debe cumplir una serie de elementos,
-    - El numero de la tarjeta debeser existente, y corresponder a alguna tarjeta vigente.
-    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje ?tarjeta no valida o no vigente.
+El procedimiento antes de autorizar dicha compra debe cumplir una serie de elementos:
+    
+    - El numero de la tarjeta debe ser existente, y corresponder a alguna tarjeta vigente.
+    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?tarjeta no valida o no vigente*.
 
     - El codigo de seguridad debe ser correcto. 
-    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje ?codigo de seguridad invalido.
-    - EL monto total de compras pendientes de pago mas la compra a realizar no debe superar el limite de compra de la tarjeta.
-    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje ?supera limite de tarjeta.
-    -La tarjeta no debe estar vencida. 
-    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje ?plazo de vigencia expirado.
-    - La tarjeta no debe estar suspendida. En caso de que no cumpla , se debe cargar los datos en la tabla rechazo con el mensaje ?la tarjeta se encuentra suspendida.
+    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?codigo de seguridad invalido*.
 
-Por esto, como se nombro anteriormente si al menos uno de los parametros es invalido se procedera a insertar los datos de la compra en la tabla rechazo donde seran insertados el numero de la tarjeta, el numero de comercio, el monto, la fecha y el respectivo del rechazo de dicha compra.
+    - El monto total de compras pendientes de pago mas la compra a realizar no debe superar el limite de compra de la tarjeta.
+    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?supera limite de tarjeta*.
 
----- 
+    - La tarjeta no debe estar vencida. 
+    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?plazo de vigencia expirado*.
+
+    - La tarjeta no debe estar suspendida. En caso de que no cumpla ,se debe cargar los datos en la tabla rechazo con el mensaje *?la tarjeta se encuentra suspendida*.
+
+Por esto, como se nombro anteriormente si al menos uno de los parametros es invalido se procedera a insertar los datos de la compra en la tabla rechazo donde se ingresara el numero de la tarjeta, el numero de comercio, el monto, la fecha y el respectivo mensaje del rechazo de dicha compra.
+
+La tabla rechazo posee el siguiente formato:
+-
 [source,sql]
-insert into rechazo values(default,numero de la arjeta, )
+----
+insert into rechazo values (default,nrocomercio, nrocomercio, fecha, monto, motivo)
+----
+
+La funcion que nombramos anteriormente, cuyo nombre es autorizacion_compra:
+
+[source,sql]
+----
 ----
 
 En esta sección se incluye el código fuente correctamente formateado—y
