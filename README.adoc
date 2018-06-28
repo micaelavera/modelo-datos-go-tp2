@@ -49,6 +49,13 @@ las alertas:
 
 == Descripción
 
+En este apartado explicaremos las dificultades que tuvimos a lo largo de
+la realización del trabajo práctico. Al principio, la ejecucion de las funciones nos resulto un poco tediosa, ya que tuvimos problemas co
+
+
+Pensar lo de la ejecucion en un determinado tiempo
+
+
 En esta sección pueden incluirse las dificultades que tuvieron, las
 soluciones encontradas, y las decisiones que fueron tomando a lo largo
 del trabajo práctico.
@@ -114,6 +121,10 @@ La funcion que nombramos anteriormente, cuyo nombre es autorizacion_compra:
 ----
 
 
+=== Generacion de la factura
+
+
+=== Alerta a clientes
 
 
 
