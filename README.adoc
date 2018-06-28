@@ -7,9 +7,9 @@ Liz Moreno López <lilita.moreno@hotmail.com>; Micaela Vera <micavera2010@hotmai
 
 El presente documento consiste en describir la aplicación CLI realizada en Go siguiendo el diseño de datos relativo a operaciones de tarjetas de crédito. Dicha aplicación permitirá que el usuario pueda realizar las siguientes acciones:
 
-- Autorización de la compra
-- Generación de la factura
-- Alerta a los clientes
+- Autorización de la compra.
+- Generación de la factura.
+- Alerta a los clientes.
 
 
 == Introducción
@@ -50,10 +50,10 @@ las alertas:
 == Descripción
 
 En este apartado explicaremos las dificultades que tuvimos a lo largo de
-la realización del trabajo práctico. Al principio, la ejecucion de las funciones nos resulto un poco tediosa, ya que tuvimos problemas co
+la realización del trabajo práctico. Al principio, la ejecucion de las funciones nos resultó un poco tediosa, ya que tuvimos problemas co
 
 
-Pensar lo de la ejecucion en un determinado tiempo
+Pensar lo de la ejecución en un determinado tiempo
 
 
 En esta sección pueden incluirse las dificultades que tuvieron, las
@@ -73,16 +73,16 @@ En esta apartado explicaremos la implementación de los stored procedures realiz
 === Autorización de la compra
 La *autorización de la compra* consiste en recibir los datos de la tarjeta, es decir, el número de dicha tarjeta y su código de seguridad, el número del comercio y el monto de dicho consumo. 
 
-Para esto, realizamos la función *autorizar_compra* que toma como los parámetros los datos nombrados anteriormente, cuyo valor de retorno será un boolean. Si todos los datos 
+Para esto, realizamos la función *autorizar_compra* que toma como los parámetros los datos nombrados anteriormente, cuyo valor de retorno será un boolean. 
 Si todos estos datos son correctos, se procederá a autorizar dicha compra, por esto la función retornara _true_. En caso de que algún dato sea inválido, devolverá _false_.
 
 El procedimiento antes de autorizar dicha compra debe cumplir una serie de elementos:
     
     - El número de la tarjeta debe ser existente, y corresponder a alguna tarjeta vigente.
-    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?tarjeta no valida o no vigente*.
+    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?tarjeta no válida o no vigente*.
 
     - El código de seguridad debe ser correcto. 
-    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?código de seguridad invalido*.
+    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?código de seguridad inválido*.
 
     - El monto total de compras pendientes de pago más la compra a realizar no debe superar el límite de compra de la tarjeta.
     En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?supera límite de tarjeta*.
@@ -102,15 +102,16 @@ La tabla *rechazo* al insertar los datos posee el siguiente formato:
 insert into rechazo values (default,nrocomercio, nrocomercio, fecha, monto, motivo)
 ----
 
-En cambio, si dicha compra esta autorizada, se procede a insertar los datos correspondientes en la tabla *compra*.
+En cambio, si dicha compra está autorizada, se procede a insertar los datos correspondientes en la tabla *compra*.
 
 La tabla *compra* al insertar los datos se sigue el siguiente formato:
+
 [source,sql]
 ----
 insert into compra values()
 ----
 
-La funcion que nombramos anteriormente, cuyo nombre es autorizacion_compra:
+La función que nombramos anteriormente, cuyo nombre es *autorizacion_compra* posee el siguiente formato:
 
 [source,sql]
 ----
@@ -120,15 +121,19 @@ La funcion que nombramos anteriormente, cuyo nombre es autorizacion_compra:
 
 ----
 
-
-=== Generacion de la factura
-
-
-=== Alerta a clientes
+=== Generación de la factura
+La *generación de la factura* consiste en tomar el numero del cliente y el periodo del año para asi insertar los datos correspondientes en las tablas *cabecera* y *detalle*. Donde en la respectiva tabla se insertaran el nombre, apellido, numero de tarjeta y direccion del cliente, el periodo del resumen, fecha de vencimiento , todas las compras realizadas en el periodo establecido y el total a pagar.
 
 
 
+=== Alertas a clientes
 
+Se debe generar alertas por posibles fraudes. Existe un Call Center que ante cada alerta generada automáticamente, realiza un llamado telefónico al cliente, indicándole la alerta detectada, y verifica
+si se trató de un fraude ó no.
+ 
+Como todo rechazo se debe ingresar automáticamente a la tabla de alertas. No puede haber ninguna demora para ingresar un rechazo en la tabla de alertas, se debe ingresar en el mismo instante en que se generó el rechazo.
+
+Para asegurar esto, realizamos un trigger *generar_alerta()*, cuando se inserta los datos de un rechazo en la tabla *rechazo* se dispara el trigger y se guardan los respectivos datos en la tabla *alerta*.
 
 En esta sección se incluye el código fuente correctamente formateado—y
 comentado, si corresponde. Además, por cada fragmento de código
