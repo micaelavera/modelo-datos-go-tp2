@@ -50,10 +50,7 @@ las alertas:
 == Descripción
 
 En este apartado explicaremos las dificultades que tuvimos a lo largo de
-la realización del trabajo práctico. Al principio, la ejecucion de las funciones nos resultó un poco tediosa, ya que tuvimos problemas co...........
-
-
-Pensar lo de la ejecución en un determinado tiempo
+la realización del trabajo práctico. Al principio, la ejecución de las funciones nos resultó un poco tediosa, ya que tuvimos problemas con la implementación de las funciones como así pensar la resolución del problema de las alertas en un determinado tiempo.
 
 
 En esta sección pueden incluirse las dificultades que tuvieron, las
@@ -68,11 +65,11 @@ funciona.
 
 
 == Implementación
-
-
+En este apartado, explicaremos la implementación de la aplicación CLI en Go siguiendo el modelo de datos de operaciones de tarjeta de crédito.
 
 === Go: Database 
-    Realizamos la creación de la database de la siguiente manera:
+
+    En primer lugar, realizamos la creación de la database de la siguiente manera:
 
 [source,sql]
 ----
@@ -90,6 +87,7 @@ func CrearDB() {
 ----
  
 === Go: Creación de tablas
+
     La  creación de las tablas se realizó de la siguiente manera:
 
 [source,sql]
@@ -178,26 +176,10 @@ create table consumo(
 	}
 
 }
-
-func AgregarPKs(db *sql.DB) {
-	_, err := db.Exec(`alter table tarjeta  add constraint tarjeta_pk   primary key (nrotarjeta);
-		alter table comercio add constraint comercio_pk  primary key (nrocomercio);
-		alter table compra   add constraint compra_pk    primary key (nrooperacion);
-		alter table rechazo  add constraint rechazo_pk   primary key (nrorechazo);
-		alter table cierre   add constraint cierre_pk    primary key (anio,mes,terminacion);
-		alter table cierre   add constraint cierre_pk    primary key (mes,terminacion);
-		alter table cabecera add constraint cabecera_pk  primary key (nroresumen);
-		alter table detalle  add constraint detalle_pk   primary key (nroresumen,nrolinea);
-		alter table alerta   add constraint alerta_pk    primary key (nroalerta);`)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-}
 ----
 
 === Go: Creación de las Primary Keys & Foreign Keys
+
 [source,sql]
 -----
 func AgregarPKs(db *sql.DB) {
@@ -279,6 +261,7 @@ func eliminarFKs(db *sql.DB) {
 En esta apartado explicaremos la implementación de los stored procedures realizados como los respectivos triggers.
 
 === Autorización de la compra
+
 La *autorización de la compra* consiste en recibir los datos de la tarjeta, es decir, el número de dicha tarjeta y su código de seguridad, el número del comercio y el monto de dicho consumo. 
 
 Para esto, realizamos la función *autorizar_compra* que toma como los parámetros los datos nombrados anteriormente, cuyo valor de retorno será un boolean. 
