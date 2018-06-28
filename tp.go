@@ -168,6 +168,209 @@ func eliminarFKs(db *sql.DB) {
 	}
 }
 
+
+func InsertarDatos(db *sql.DB){
+	_, err := (`--CLIENTES
+    insert into cliente values(1,  'José',      'Argento',      'Godoy Cruz 1064',      '4584-3863');
+    insert into cliente values(2,  'Mercedes',  'Benz',         'Pte Perón 1223',       '4665-8989');
+    insert into cliente values(3,  'Megan',     'Ocaranza',     'Tribulato 2345',       '4500-7651');
+    insert into cliente values(4,  'Luis',      'Rios',         'Dorrego 1234',         '4213-0153');
+    insert into cliente values(5,  'Julio',     'Cortazar',     ' Av Balbin 534',       '4890-8747');
+    insert into cliente values(6,  'Tomás',     'Aguirre',      'Urquiza 540',          '4707-1600');
+    insert into cliente values(7,  'Juan',      'Avalos',       'Av E Perón 7716',      '4589-3191');
+    insert into cliente values(8,  'Prudencia', 'Arzuaga',      'Rivadavia 416',        '4665-2333');
+    insert into cliente values(9,  'Damiana',   'Molina',       'Malvinas 890',         '4129-0964');
+    insert into cliente values(10, 'Ramón',     'Perez',        'Las Heras 460',        '4556-8970');
+    insert into cliente values(11, 'Fernando',  'Álvarez',      'Tribulato 1290',       '4908-7822');
+    insert into cliente values(12, 'Carla',     'Estrella',     'Primera Junta 7865',   '4444-5625');
+    insert into cliente values(13, 'Farid',     'Hasan',        'España 438',           '4123-9078');
+    insert into cliente values(14, 'Alicia',    'Castillo',     'Rodriguez Peña 170',   '4367-7801');
+    insert into cliente values(15, 'Elsa',      'López',        'Argüero 1138',         '4563-2323');
+    insert into cliente values(16, 'Harry',     'Potter',       'Gutiérrez 908',        '4768-9475');
+    insert into cliente values(17, 'Pedro',     'Moreno',       'Julian Rejala 999',    '4556-9872');
+    insert into cliente values(18, 'Ofelia',    'Le Brun',      'Paunero 7856',         '4389-7531');
+    insert into cliente values(19, 'Laura',     'Martin',       'Las Margaritas 484',   '4895-7939');
+    insert into cliente values(20, 'Evan',      'Peters',       'Irigoin 296',          '4664-1640');
+
+--TARJETAS
+
+	insert into tarjeta values('5703068016463339' ,  1, '201106', '201606','1234',200000.00,'anulada');
+    insert into tarjeta values('5578153904072665' ,  2, '201606', '201906','1123',200000.00,'vigente');
+    insert into tarjeta values('5681732770558693' ,  3, '201606', '201906','1132',200000.00,'vigente');
+    insert into tarjeta values('5460322592744445' ,  4, '201606', '201906','1231',200000.00,'vigente');
+    insert into tarjeta values('5430913178957141' ,  5, '201606', '201906','2122',200000.00,'vigente');
+    insert into tarjeta values('5019155187146691' ,  6, '201606', '201906','2433',200000.00,'vigente');
+    insert into tarjeta values('5019792017295163' ,  7, '201606', '201906','2344',200000.00,'vigente');
+    insert into tarjeta values('5019919938293361' ,  8, '201606', '201906','2235',200000.00,'vigente');
+    insert into tarjeta values('6297661287321366' ,  9, '201606', '201906','3236',200000.00,'vigente');
+    insert into tarjeta values('6286339466940040' , 10, '201606', '201906','3337',200000.00,'vigente');
+    insert into tarjeta values('6270607345512992' , 11, '201606', '201906','3438',200000.00,'vigente');
+    insert into tarjeta values('6204296517127663' , 12, '201606', '201906','3239',200000.00,'vigente');
+    insert into tarjeta values('6293235484090035' , 13, '201606', '201906','4110',200000.00,'vigente');
+    insert into tarjeta values('6921678767563105' , 14, '201606', '201906','4211',200000.00,'vigente');
+    insert into tarjeta values('6334546019765631' , 15, '201606', '201906','4412',200000.00,'vigente');
+    insert into tarjeta values('6761361843313612' , 16, '201606', '201906','4313',200000.00,'vigente');
+    insert into tarjeta values('6528492702135343' , 17, '201606', '201906','5214',200000.00,'vigente');
+    insert into tarjeta values('6585963936581775' , 18, '201606', '201906','6215',200000.00,'vigente');
+    insert into tarjeta values('3696418858377210' , 19, '201606', '201906','7216',200000.00,'vigente');
+    insert into tarjeta values('3689635420613720' , 19, '201606', '201906','8217',200000.00,'vigente');
+    insert into tarjeta values('3033446987174022' , 20, '201606', '201906','9218',200000.00,'vigente');
+    insert into tarjeta values('3602403813503232' , 20, '201606', '201906','1119',200000.00,'vigente');
+
+
+--COMERCIOS
+
+    insert into comercio values( 1,'Anubis'              ,'Av. Pres. Juan Domingo Peron 3497','1613','4463-5343' );
+    insert into comercio values( 2,'Si A La Pizza'       ,'25 de Mayo 2502'                  ,'1613','4463-2314' );
+    insert into comercio values( 3,'Narrow'              ,'Av. Pres. Juan Domingo Peron 1420','1663','4667-7297' );
+    insert into comercio values( 4,'Starbucks Coffee'    ,'Parana 3745'                      ,'1640','4748-0098' );
+    insert into comercio values( 5,'47 Street'           ,'Cruce Ruta 8 y Ruta 202'          ,'1613','4667-5770' );
+    insert into comercio values( 6,'Frávega'             ,'Av. Pres. Juan Domingo Peron 1127','1663','4667-4009' );
+    insert into comercio values( 7,'Optica Ivaldi'       ,'Av. Pres. Juan Domingo Peron 1645','1663','4667-2332' );
+    insert into comercio values( 8,'Farmacity'           ,'Av. Constituyentes 6093/99'       ,'1617','4587-8243' );
+    insert into comercio values( 9,'Cúspide'             ,'Cruce Ruta 8 y Ruta 202'          ,'1613','1521508092');
+    insert into comercio values(10,'Garbarino'           ,'Av. Dr. Ricardo Balbín 1198'      ,'1663','4667-6534' );
+    insert into comercio values(11,'Starbucks Coffee'    ,'Cruce Ruta 8 y Ruta 202'          ,'1613','4667-5434' );
+    insert into comercio values(12,'Bonafide'            ,' Italia 1249'                     ,'1663','4667-4545' );
+    insert into comercio values(13,'Optica Gris'         ,'Av. Arturo Illia 5243'            ,'1613','4463-8344' );
+    insert into comercio values(14,'Matu Jean´s'         ,'Av. Pres.Juan Domingo ]Peron 3300','1613','4463-9089' );
+    insert into comercio values(15,'Compumundo'          ,'Belgrano 1401'                    ,'1663','4667-3425' );
+    insert into comercio values(16,'Falabella'           ,'Parana 3745'                      ,'1640','4717-8100' );
+    insert into comercio values(17,'McDonald´s'          ,'Av. Pres. Juan Domingo Peron 983' ,'1662','4668-0912' );
+    insert into comercio values(18,'M 58'                ,'Charlone 1201'                    ,'1663','4667-4532' );
+    insert into comercio values(19,'Cine Hoyts Unicenter','Parana 3745'                      ,'1640','4717-8109' );
+    insert into comercio values(20,'Solo Deportes'       ,'Av. Pres. Juan Domingo Peron 1317','1663','4667-3453' );
+    
+    
+--CIERRES
+
+    insert into cierre values(2018,1,0 ,'2018-01-27','2018-02-27','2018-03-07');
+    insert into cierre values(2018,1,1 ,'2018-01-15','2018-02-15','2018-02-25');
+    insert into cierre values(2018,1,2 ,'2018-01-03','2018-02-03','2018-02-15');
+    insert into cierre values(2018,1,3 ,'2018-01-07','2018-02-07','2018-02-15');
+    insert into cierre values(2018,1,4 ,'2018-01-05','2018-02-05','2018-02-15');
+    insert into cierre values(2018,1,5 ,'2018-01-24','2018-02-24','2018-03-07');
+    insert into cierre values(2018,1,6 ,'2018-01-28','2018-02-28','2018-03-10');
+    insert into cierre values(2018,1,7 ,'2018-01-07','2018-02-07','2018-02-17');
+    insert into cierre values(2018,1,8 ,'2018-01-23','2018-02-23','2018-03-05');
+    insert into cierre values(2018,1,9 ,'2018-01-09','2018-02-09','2018-02-19');
+    insert into cierre values(2018,2,0 ,'2018-02-03','2018-03-03','2018-03-13');
+    insert into cierre values(2018,2,1 ,'2018-02-07','2018-03-07','2018-03-17');
+    insert into cierre values(2018,2,2 ,'2018-02-19','2018-03-19','2018-03-27');
+    insert into cierre values(2018,2,3 ,'2018-02-24','2018-03-24','2018-03-29');
+    insert into cierre values(2018,2,4 ,'2018-02-27','2018-03-27','2018-04-02');
+    insert into cierre values(2018,2,5 ,'2018-02-02','2018-03-02','2018-03-12');
+    insert into cierre values(2018,2,6 ,'2018-02-04','2018-03-04','2018-03-14');
+    insert into cierre values(2018,2,7 ,'2018-02-16','2018-03-16','2018-03-26');
+    insert into cierre values(2018,2,8 ,'2018-02-13','2018-03-13','2018-03-23');
+    insert into cierre values(2018,2,9 ,'2018-02-09','2018-03-09','2018-03-19');
+    insert into cierre values(2018,3,0 ,'2018-03-01','2018-04-01','2018-04-11');
+    insert into cierre values(2018,3,1 ,'2018-03-04','2018-04-04','2018-04-14');
+    insert into cierre values(2018,3,2 ,'2018-03-14','2018-04-14','2018-04-24');
+    insert into cierre values(2018,3,3 ,'2018-03-24','2018-04-24','2018-05-05');
+    insert into cierre values(2018,3,4 ,'2018-03-18','2018-04-18','2018-04-28');
+    insert into cierre values(2018,3,5 ,'2018-03-15','2018-04-15','2018-04-25');
+    insert into cierre values(2018,3,6 ,'2018-03-28','2018-04-28','2018-05-03');
+    insert into cierre values(2018,3,7 ,'2018-03-12','2018-04-12','2018-04-22');
+    insert into cierre values(2018,3,8 ,'2018-03-07','2018-04-07','2018-04-17');
+    insert into cierre values(2018,3,9 ,'2018-03-22','2018-04-22','2018-05-02');
+    insert into cierre values(2018,4,0 ,'2018-04-26','2018-05-26','2018-06-06');
+    insert into cierre values(2018,4,1 ,'2018-04-28','2018-05-28','2018-06-06');
+    insert into cierre values(2018,4,2 ,'2018-04-01','2018-05-01','2018-05-11');
+    insert into cierre values(2018,4,3 ,'2018-04-12','2018-05-12','2018-05-22');
+    insert into cierre values(2018,4,4 ,'2018-04-21','2018-05-21','2018-05-27');
+    insert into cierre values(2018,4,5 ,'2018-04-15','2018-05-15','2018-05-26');
+    insert into cierre values(2018,4,6 ,'2018-04-19','2018-05-19','2018-05-26');
+    insert into cierre values(2018,4,7 ,'2018-04-20','2018-05-20','2018-05-26');
+    insert into cierre values(2018,4,8 ,'2018-04-04','2018-05-04','2018-05-13');
+    insert into cierre values(2018,4,9 ,'2018-04-06','2018-05-06','2018-05-15');
+    insert into cierre values(2018,5,0 ,'2018-05-05','2018-06-05','2018-06-15');
+    insert into cierre values(2018,5,1 ,'2018-05-07','2018-06-07','2018-06-17');
+    insert into cierre values(2018,5,2 ,'2018-05-09','2018-06-09','2018-06-17');
+    insert into cierre values(2018,5,3 ,'2018-05-15','2018-06-15','2018-06-25');
+    insert into cierre values(2018,5,4 ,'2018-05-25','2018-06-25','2018-06-30');
+    insert into cierre values(2018,5,5 ,'2018-05-18','2018-06-18','2018-06-27');
+    insert into cierre values(2018,5,6 ,'2018-05-23','2018-06-23','2018-06-30');
+    insert into cierre values(2018,5,7 ,'2018-05-29','2018-06-29','2018-07-07');
+    insert into cierre values(2018,5,8 ,'2018-05-30','2018-06-30','2018-07-07');
+    insert into cierre values(2018,5,9 ,'2018-05-17','2018-06-17','2018-06-27');
+    insert into cierre values(2018,6,0 ,'2018-06-05','2018-07-05','2018-07-15');
+    insert into cierre values(2018,6,1 ,'2018-06-07','2018-07-07','2018-07-17');
+    insert into cierre values(2018,6,2 ,'2018-06-09','2018-07-09','2018-07-19');
+    insert into cierre values(2018,6,3 ,'2018-06-15','2018-07-15','2018-07-25');
+    insert into cierre values(2018,6,4 ,'2018-06-18','2018-07-18','2018-07-28');
+    insert into cierre values(2018,6,5 ,'2018-06-20','2018-07-20','2018-07-30');
+    insert into cierre values(2018,6,6 ,'2018-06-22','2018-07-22','2018-08-04');
+    insert into cierre values(2018,6,7 ,'2018-06-26','2018-07-26','2018-08-07');
+    insert into cierre values(2018,6,8 ,'2018-06-29','2018-07-29','2018-08-07');
+    insert into cierre values(2018,6,9 ,'2018-06-30','2018-07-30','2018-08-07');
+    insert into cierre values(2018,7,0 ,'2018-07-05','2018-08-05','2018-08-15');
+    insert into cierre values(2018,7,1 ,'2018-07-07','2018-08-07','2018-08-17');
+    insert into cierre values(2018,7,2 ,'2018-07-09','2018-08-09','2018-08-19');
+    insert into cierre values(2018,7,3 ,'2018-07-12','2018-08-12','2018-08-22');
+    insert into cierre values(2018,7,4 ,'2018-07-17','2018-08-17','2018-08-27');
+    insert into cierre values(2018,7,5 ,'2018-07-19','2018-08-19','2018-08-29');
+    insert into cierre values(2018,7,6 ,'2018-07-22','2018-08-22','2018-08-30');
+    insert into cierre values(2018,7,7 ,'2018-07-25','2018-08-25','2018-09-02');
+    insert into cierre values(2018,7,8 ,'2018-07-27','2018-08-27','2018-09-02');
+    insert into cierre values(2018,7,9 ,'2018-07-29','2018-08-29','2018-09-02');
+    insert into cierre values(2018,8,0 ,'2018-08-02','2018-09-02','2018-09-12');
+    insert into cierre values(2018,8,1 ,'2018-08-05','2018-09-05','2018-09-12');
+    insert into cierre values(2018,8,2 ,'2018-08-07','2018-09-07','2018-09-17');
+    insert into cierre values(2018,8,3 ,'2018-08-09','2018-09-09','2018-09-19');
+    insert into cierre values(2018,8,4 ,'2018-08-12','2018-09-12','2018-09-22');
+    insert into cierre values(2018,8,5 ,'2018-08-15','2018-09-15','2018-09-26');
+    insert into cierre values(2018,8,6 ,'2018-08-17','2018-09-17','2018-09-27');
+    insert into cierre values(2018,8,7 ,'2018-08-19','2018-09-19','2018-09-29');
+    insert into cierre values(2018,8,8 ,'2018-08-22','2018-09-22','2018-09-30');
+    insert into cierre values(2018,8,9 ,'2018-08-27','2018-09-27','2018-10-02');
+    insert into cierre values(2018,9,0 ,'2018-09-02','2018-10-02','2018-10-12');
+    insert into cierre values(2018,9,1 ,'2018-09-05','2018-10-05','2018-10-15');
+    insert into cierre values(2018,9,2 ,'2018-09-07','2018-10-07','2018-10-17');
+    insert into cierre values(2018,9,3 ,'2018-09-09','2018-10-09','2018-10-19');
+    insert into cierre values(2018,9,4 ,'2018-09-12','2018-10-12','2018-10-22');
+    insert into cierre values(2018,9,5 ,'2018-09-15','2018-10-15','2018-10-25');
+    insert into cierre values(2018,9,6 ,'2018-09-17','2018-10-17','2018-10-25');
+    insert into cierre values(2018,9,7 ,'2018-09-19','2018-10-19','2018-10-25');
+    insert into cierre values(2018,9,8 ,'2018-09-22','2018-10-22','2018-10-30');
+    insert into cierre values(2018,9,9 ,'2018-09-25','2018-10-25','2018-10-30');
+    insert into cierre values(2018,10,0,'2018-10-02','2018-11-02','2018-11-12');
+    insert into cierre values(2018,10,1,'2018-10-05','2018-11-05','2018-11-15');
+    insert into cierre values(2018,10,2,'2018-10-07','2018-11-07','2018-11-17');
+    insert into cierre values(2018,10,3,'2018-10-09','2018-11-09','2018-11-19');
+    insert into cierre values(2018,10,4,'2018-10-12','2018-11-12','2018-11-22');
+    insert into cierre values(2018,10,5,'2018-10-15','2018-11-15','2018-11-25');
+    insert into cierre values(2018,10,6,'2018-10-17','2018-11-17','2018-11-27');
+    insert into cierre values(2018,10,7,'2018-10-19','2018-11-19','2018-11-29');
+    insert into cierre values(2018,10,8,'2018-10-22','2018-11-22','2018-11-29');
+    insert into cierre values(2018,10,9,'2018-10-25','2018-11-25','2018-12-05');
+    insert into cierre values(2018,11,0,'2018-11-02','2018-12-02','2018-12-12');
+    insert into cierre values(2018,11,1,'2018-11-05','2018-12-05','2018-12-15');
+    insert into cierre values(2018,11,2,'2018-11-07','2018-12-07','2018-12-17');
+    insert into cierre values(2018,11,3,'2018-11-09','2018-12-09','2018-12-19');
+    insert into cierre values(2018,11,4,'2018-11-12','2018-12-12','2018-12-22');
+    insert into cierre values(2018,11,5,'2018-11-15','2018-12-15','2018-12-25');
+    insert into cierre values(2018,11,6,'2018-11-17','2018-12-17','2018-12-27');
+    insert into cierre values(2018,11,7,'2018-11-19','2018-12-19','2018-12-29');
+    insert into cierre values(2018,11,8,'2018-11-22','2018-12-22','2018-12-30');
+    insert into cierre values(2018,11,9,'2018-11-25','2018-12-25','2019-01-02');
+    insert into cierre values(2018,12,0,'2018-12-02','2019-01-02','2019-01-12');
+    insert into cierre values(2018,12,1,'2018-12-05','2019-01-05','2019-01-15');
+    insert into cierre values(2018,12,2,'2018-12-07','2019-01-07','2019-01-17');
+    insert into cierre values(2018,12,3,'2018-12-09','2019-01-09','2019-01-19');
+    insert into cierre values(2018,12,4,'2018-12-12','2019-01-12','2019-01-22');
+    insert into cierre values(2018,12,5,'2018-12-15','2019-01-15','2019-01-25');
+    insert into cierre values(2018,12,6,'2018-12-17','2019-01-17','2019-01-27');
+    insert into cierre values(2018,12,7,'2018-12-19','2019-01-19','2019-01-29');
+    insert into cierre values(2018,12,8,'2018-12-22','2019-01-22','2019-01-29');
+    insert into cierre values(2018,12,9,'2018-12-25','2019-01-25','2019-02-02');
+`);
+	if err != nil {
+		log.Fatal(err)
+	}
+}	
+
+
 func AlertarClientes_1min() {
 	for {
 		//funcion del alerta al cliente cada minuto
@@ -206,7 +409,12 @@ func LeerDatosUsuario(db *sql.DB) {
 	} else if n == 4 {
 		AgregarFKs(db)
 		fmt.Printf("Creando  las Foreign Keys ...\n")
+
+	} else if n == 5 {
+		InsertarDatos(db)
+		fmt.Printf("Insertando datos.. \n")
 	}
+	
 
 }
 
