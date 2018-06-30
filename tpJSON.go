@@ -20,7 +20,7 @@ type Cliente struct {
 }
 
 type Tarjeta struct {
-	NroTarjeta   string
+	NroTarjeta   int
 	NroCliente   int
 	ValidaDesde  string
 	ValidaHasta  string
@@ -30,7 +30,7 @@ type Tarjeta struct {
 }
 
 type Comercio struct {
-	Nrocomercio  int
+	NroComercio  int
 	Nombre       string
 	Domicilio    string
 	Codigopostal string
@@ -43,19 +43,16 @@ var clientes = []Cliente{
 	{NroCliente: 3, Nombre: "Megan", Apellido: "Ocaranza", Domicilio: "Tribulato 2345", Telefono: "4500-7651"},
 }
 
-/*
 var tarjetas = []Tarjeta{
-	{NroTarjeta:"5703068016463339" ,NroCliente:  1, ValidaDesde:"201106", ValidaHasta:"201606",CodSeguridad:"1234",LimiteCompra:200000.00, Estado:"anulada");
-    {NroTarjeta:"5578153904072665" ,NroCliente:  2, ValidaDesde:"201606", ValidaHasta:"201906",CodSeguridad:"1123",LimiteCompra:200000.00, Estado:"vigente");
-    {NroTarjeta:"5681732770558693" ,NroCliente:  3, ValidaDesde:"201606", ValidaHasta:"201906",CodSeguridad:"1132",LimiteCompra:200000.00, Estado:"vigente");
+	{NroTarjeta: 5703068016463339, NroCliente: 1, ValidaDesde: "201106", ValidaHasta: "201606", CodSeguridad: "1234", LimiteCompra: 200000.00, Estado: "anulada"},
+	{NroTarjeta: 5578153904072665, NroCliente: 2, ValidaDesde: "201606", ValidaHasta: "201906", CodSeguridad: "1123", LimiteCompra: 200000.00, Estado: "vigente"},
+	{NroTarjeta: 5681732770558693, NroCliente: 3, ValidaDesde: "201606", ValidaHasta: "201906", CodSeguridad: "1132", LimiteCompra: 200000.00, Estado: "vigente"},
 }
-var comercios = []Comerco{
-	{Nrocomercio:1, Nombre: "Anubis",			Domicilio: "Av. Pres. Juan Domingo Peron 3497", Codigopostal:"1613",Telefono:"4463-5343" }
-	{Nrocomercio:2, Nombre: "Si A La Pizza" ,	domicilio:"25 de Mayo 2502",				 	Codigopostal:"1613",Telefono:"4463-2314" }
-	{Nrocomercio:3, Nombre: "Narrow" ,			Domicilio:"Av. Pres. Juan Domingo Peron 1420",	Codigopostal:"1663",Telefono:"4667-7297" }
-
+var comercios = []Comercio{
+	{NroComercio: 1, Nombre: "Anubis", Domicilio: "Av. Pres. Juan Domingo Peron 3497", Codigopostal: "1613", Telefono: "4463-5343"},
+	{NroComercio: 2, Nombre: "Si A La Pizza", Domicilio: "25 de Mayo 2502", Codigopostal: "1613", Telefono: "4463-2314"},
+	{NroComercio: 3, Nombre: "Narrow", Domicilio: "Av. Pres. Juan Domingo Peron 1420", Codigopostal: "1663", Telefono: "4667-7297"},
 }
-*/
 
 func CreateUpdate(db *bolt.DB, bucketName string, key []byte, val []byte) error {
 	//abre la transaccion de escritura
@@ -126,31 +123,62 @@ func Clientes(db *bolt.DB) {
 
 func Tarjetas(db *bolt.DB) {
 
-	jose := Cliente{1, "Jose", "Argento", "Godoy Cruz 1064", "4584-3863"}
-	data, err := json.Marshal(jose)
+	nro := Tarjeta{5703068016463339, 1, "201106", "201606", "1234", 200000.00, "anulada"}
+	data, err := json.Marshal(nro)
 	if err != nil {
 		log.Fatal(err)
 	}
-	CreateUpdate(db, "cliente", []byte(strconv.Itoa(jose.NroCliente)), data)
-	resultado, err := ReadUnique(db, "cliente", []byte(strconv.Itoa(jose.NroCliente)))
+	CreateUpdate(db, "tarjeta", []byte(strconv.Itoa(nro.NroTarjeta)), data)
+	resultado, err := ReadUnique(db, "tarjeta", []byte(strconv.Itoa(nro.NroTarjeta)))
 	fmt.Printf("%s\n", resultado)
 
-	mercedes := Cliente{2, "Mercedes", "Benz", "Pte Peron 1223", "4665-89892"}
-	data2, err := json.Marshal(mercedes)
+	nro2 := Tarjeta{5578153904072665, 2, "201106", "201606", "1123", 200000.00, "vigente"}
+	data2, err := json.Marshal(nro2)
 	if err != nil {
 		log.Fatal(err)
 	}
-	CreateUpdate(db, "cliente", []byte(strconv.Itoa(mercedes.NroCliente)), data2)
-	resul, err := ReadUnique(db, "cliente", []byte(strconv.Itoa(mercedes.NroCliente)))
+	CreateUpdate(db, "tarjeta", []byte(strconv.Itoa(nro2.NroTarjeta)), data2)
+	resul, err := ReadUnique(db, "tarjeta", []byte(strconv.Itoa(nro2.NroTarjeta)))
 	fmt.Printf("%s\n", resul)
 
-	megan := Cliente{2, "Megan", "Ocaranza", "Tribulato 2345", "4500-7651"}
-	data3, err := json.Marshal(megan)
+	nro3 := Tarjeta{5681732770558693, 3, "201106", "201606", "1132", 200000.00, "vigente"}
+	data3, err := json.Marshal(nro3)
 	if err != nil {
 		log.Fatal(err)
 	}
-	CreateUpdate(db, "cliente", []byte(strconv.Itoa(megan.NroCliente)), data3)
-	resul3, err := ReadUnique(db, "cliente", []byte(strconv.Itoa(megan.NroCliente)))
+	CreateUpdate(db, "tarjeta", []byte(strconv.Itoa(nro3.NroTarjeta)), data3)
+	resul3, err := ReadUnique(db, "tarjeta", []byte(strconv.Itoa(nro3.NroTarjeta)))
+	fmt.Printf("%s\n", resul3)
+
+}
+
+func Comercios(db *bolt.DB) {
+
+	nro := Comercio{1, "Anubis", "Av. Pres. Juan Domingo Peron 3497", "1613", "4463-5343"}
+	data, err := json.Marshal(nro)
+	if err != nil {
+		log.Fatal(err)
+	}
+	CreateUpdate(db, "comercios", []byte(strconv.Itoa(nro.NroComercio)), data)
+	resultado, err := ReadUnique(db, "comercios", []byte(strconv.Itoa(nro.NroComercio)))
+	fmt.Printf("%s\n", resultado)
+
+	nro2 := Comercio{2, "Si A La Pizza", "25 de Mayo 2502", "1613", "4463-2314"}
+	data2, err := json.Marshal(nro2)
+	if err != nil {
+		log.Fatal(err)
+	}
+	CreateUpdate(db, "comercios", []byte(strconv.Itoa(nro2.NroComercio)), data2)
+	resul, err := ReadUnique(db, "comercios", []byte(strconv.Itoa(nro2.NroComercio)))
+	fmt.Printf("%s\n", resul)
+
+	nro3 := Comercio{3, "Narrow", "Av. Pres. Juan Domingo Peron 1420", "1663", "4667-7297"}
+	data3, err := json.Marshal(nro3)
+	if err != nil {
+		log.Fatal(err)
+	}
+	CreateUpdate(db, "comercios", []byte(strconv.Itoa(nro3.NroComercio)), data3)
+	resul3, err := ReadUnique(db, "comercios", []byte(strconv.Itoa(nro3.NroComercio)))
 	fmt.Printf("%s\n", resul3)
 
 }
@@ -165,6 +193,8 @@ func main() {
 	}
 	defer db.Close()
 	Clientes(db)
+	Tarjetas(db)
+	Comercios(db)
 	//	LeerDatosUsuario(db);
 	/*
 		data, err := json.MarshalIndent(clientes, "", "    ")
