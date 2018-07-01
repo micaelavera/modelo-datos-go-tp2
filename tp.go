@@ -30,7 +30,7 @@ func CrearTablas(db *sql.DB) {
 	telefono   char(12)
 );
 create table tarjeta(
-	nrotarjeta   char(12),
+	nrotarjeta   char(16),
 	nrocliente   integer,
 	validadesde  char(6), --e.g 201106
 	validahasta  char(6),
@@ -46,7 +46,7 @@ create table comercio(
 	telefono     char(12)
 );
 create table compra(
-	nrooperacion integer,
+	nrooperacion serial,
 	nrotarjeta   char(16),
 	nrocomercio  integer,
 	fecha        timestamp,
@@ -54,7 +54,7 @@ create table compra(
 	pagado       boolean
 );
 create table rechazo(
-	nrorechazo  integer,
+	nrorechazo  serial,
 	nrotarjeta  char(16),
 	nrocomercio integer,
 	fecha       timestamp,
@@ -66,10 +66,11 @@ create table cierre(
 	mes         integer,
 	terminacion integer,
 	fechainicio date,
+	fechacierre date,
 	fechavto    date
 );
 create table cabecera(
-	nroresumen  integer,
+	nroresumen  serial,
 	nombre     varchar(64),
 	apellido   varchar(64),
 	domicilio  varchar(64),
@@ -87,7 +88,7 @@ create table detalle(
 	monto           decimal(7,2)
 );
 create table alerta(
-	nroalerta   integer,
+	nroalerta   serial,
 	nrotarjeta  char(16),
 	fecha       timestamp,
 	nrorechazo  integer,
@@ -107,11 +108,12 @@ create table consumo(
 }
 
 func AgregarPKs(db *sql.DB) {
-	_, err := db.Exec(`alter table tarjeta  add constraint tarjeta_pk   primary key (nrotarjeta);
+	_, err := db.Exec(`alter table cliente  add constraint cliente_pk   primary key (nrocliente);
+		alter table tarjeta  add constraint tarjeta_pk   primary key (nrotarjeta);
 		alter table comercio add constraint comercio_pk  primary key (nrocomercio);
 		alter table compra   add constraint compra_pk    primary key (nrooperacion);
 		alter table rechazo  add constraint rechazo_pk   primary key (nrorechazo);
-		alter table cierre   add constraint cierre_pk    primary key (anio,mes,terminacion);
+		alter table cierre   add constraint cierre_pk  primary key (anio,mes,terminacion);
 		alter table cabecera add constraint cabecera_pk  primary key (nroresumen);
 		alter table detalle  add constraint detalle_pk   primary key (nroresumen,nrolinea);
 		alter table alerta   add constraint alerta_pk    primary key (nroalerta);`)
@@ -122,8 +124,7 @@ func AgregarPKs(db *sql.DB) {
 
 }
 func AgregarFKs(db *sql.DB) {
-	_, err := db.Exec(`	--FOREIGN KEY
-		alter table tarjeta  add constraint tarjeta_fk0 foreign key (nrocliente)  references cliente  (nrocliente);
+	_, err := db.Exec(`alter table tarjeta  add constraint tarjeta_fk0 foreign key (nrocliente)  references cliente  (nrocliente);
 		alter table compra   add constraint compra_fk0  foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
 		alter table compra   add constraint compra_fk1  foreign key (nrocomercio) references comercio (nrocomercio);
 		alter table rechazo  add constraint rechazo_fk0 foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
@@ -137,12 +138,11 @@ func AgregarFKs(db *sql.DB) {
 	//Alter table nombredelatabla drop constraint nombre_pk;
 }
 func eliminarPKs(db *sql.DB) {
-	_, err := db.Exec(`--DROP PRIMARY KEYs
+	_, err := db.Exec(`alter table cliente  drop constraint cliente_pk;
 	alter table tarjeta  drop constraint tarjeta_pk;
 	alter table comercio drop constraint comercio_pk;
 	alter table compra   drop constraint compra_pk;
 	alter table rechazo  drop constraint rechazo_pk;
-	alter table cierre   drop constraint cierre_pk;
 	alter table cierre   drop constraint cierre_pk;
 	alter table cabecera drop constraint cabecera_pk;
 	alter table detalle  drop constraint detalle_pk;
@@ -153,8 +153,7 @@ func eliminarPKs(db *sql.DB) {
 	}
 }
 func eliminarFKs(db *sql.DB) {
-	_, err := db.Exec(`	-- DROP FOREIGN KEYs
-		alter table tarjeta  drop constraint tarjeta_fk0;
+	_, err := db.Exec(`alter table tarjeta  drop constraint tarjeta_fk0;
 		alter table compra   drop constraint compra_fk0;
 		alter table compra   drop constraint compra_fk1;
 		alter table rechazo  drop constraint rechazo_fk0;
@@ -192,7 +191,7 @@ func InsertarDatos(db *sql.DB) {
 
 --TARJETAS
 
-	insert into tarjeta values('5703068016463339' ,  1, '201106', '201606','1234',200000.00,'anulada');
+    insert into tarjeta values('5703068016463339' ,  1, '201106', '201606','1234',200000.00,'anulada');
     insert into tarjeta values('5578153904072665' ,  2, '201606', '201906','1123',200000.00,'vigente');
     insert into tarjeta values('5681732770558693' ,  3, '201606', '201906','1132',200000.00,'vigente');
     insert into tarjeta values('5460322592744445' ,  4, '201606', '201906','1231',200000.00,'vigente');
@@ -214,7 +213,6 @@ func InsertarDatos(db *sql.DB) {
     insert into tarjeta values('3689635420613720' , 19, '201606', '201906','8217',200000.00,'vigente');
     insert into tarjeta values('3033446987174022' , 20, '201606', '201906','9218',200000.00,'vigente');
     insert into tarjeta values('3602403813503232' , 20, '201606', '201906','1119',200000.00,'vigente');
-
 
 --COMERCIOS
 
@@ -238,8 +236,7 @@ func InsertarDatos(db *sql.DB) {
     insert into comercio values(18,'M 58'                ,'Charlone 1201'                    ,'1663','4667-4532' );
     insert into comercio values(19,'Cine Hoyts Unicenter','Parana 3745'                      ,'1640','4717-8109' );
     insert into comercio values(20,'Solo Deportes'       ,'Av. Pres. Juan Domingo Peron 1317','1663','4667-3453' );
-    
-    
+
 --CIERRES
 
     insert into cierre values(2018,1,0 ,'2018-01-27','2018-02-27','2018-03-07');
@@ -429,36 +426,48 @@ $$language plpgsql; `)
 }
 
 func LeerDatosUsuario(db *sql.DB) {
-	var n int
-	fmt.Printf("Enter 1 para crear la database: \n")
-	fmt.Printf("Enter 2 para crear las tablas: \n")
-	fmt.Printf("Enter 3 para agregar las Primary Keys: \n")
-	fmt.Printf("Enter 4 para agregar las Foreign Keys: \n")
-	fmt.Printf("Enter 5 para insertar los datos en las tablas: \n")
-	fmt.Scanf("%d", &n)
+	var opcion int
+	var salir = false
+	fmt.Printf("************************ MENU *****************\n")
+	fmt.Printf("*	1. Crear la database				 	   \n")
+	fmt.Printf("*	2. Crear las tablas						   \n")
+	fmt.Printf("*	3. Agregar las Primary Keys				   \n")
+	fmt.Printf("*	4. Agregar las Foreign Keys				   \n")
+	fmt.Printf("*	5. Insertar los datos en las tablas		   \n")
+	fmt.Printf("* 	6. Eliminar las Primary Keys y Foreign Keys\n")
+	fmt.Printf("*	7. Salir de la aplicacion				   \n")
+	fmt.Printf("***********************************************\n")
 
-	if n == 1 {
-		CrearDB()
-		fmt.Printf("Creando database ... \n")
-
-	} else if n == 2 {
-		CrearTablas(db)
-		fmt.Printf("Creando las tablas ...\n")
-
-	} else if n == 3 {
-		AgregarPKs(db)
-		fmt.Printf("Creando las  Primary Keys ...\n")
-
-	} else if n == 4 {
-		AgregarFKs(db)
-		fmt.Printf("Creando  las Foreign Keys ...\n")
-
-	} else if n == 5 {
-		InsertarDatos(db)
-		fmt.Printf("Insertando datos.. \n")
+	for !salir {
+		fmt.Scanf("%d", &opcion)
+		switch opcion {
+			case 1:
+				CrearDB()
+				fmt.Printf("Creando database ... \n")
+			case 2:
+				CrearTablas(db)
+				fmt.Printf("Creando las tablas ...\n")
+			case 3:
+				AgregarPKs(db)
+				fmt.Printf("Agregando las Primary keys ...\n")
+			case 4:
+				AgregarFKs(db)
+				fmt.Printf("Agregando las Foreign Keys ... \n")
+			case 5:
+				InsertarDatos(db)
+				fmt.Printf("Insertando datos ...\n")
+			case 6:
+				eliminarFKs(db)
+				eliminarPKs(db)
+				fmt.Printf("Eliminando PKs y FKS ...\n")
+			case 7:
+			salir = true
+			default:
+			fmt.Printf("Solo opciones entre 1 y 7\n")
+		}
 	}
-
 }
+
 
 func main() {
 	db, err := sql.Open("postgres", "user = postgres dbname = tp2 sslmode=disable")
@@ -467,14 +476,5 @@ func main() {
 	}
 	defer db.Close()
 
-	var salir = false
-	for !salir {
-		LeerDatosUsuario(db)
-		var respuesta string
-		fmt.Printf("¿Desea seguir en la aplicacion S/N?. Respuesta: \n")
-		fmt.Scanf("%s", &respuesta)
-		if respuesta == "N" || respuesta == "n" {
-			salir = true
-		}
-	}
+	LeerDatosUsuario(db)
 }
