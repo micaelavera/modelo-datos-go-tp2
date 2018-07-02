@@ -415,6 +415,11 @@ for each row
 execute procedure generar_alerta();
 ----
 
+=== Comparación entre el modelo relacional con un modelo no relacional NoSQL.
+En este apartado describiremos la compraracion entre SQL y NoSQL basada en JSON, como lo es BoltDB
+Las bases de datos relacionales estructuran datos en filas y solo son accesibles mediante el uso de SQL.
+ 
+
 
 == Conclusiones
 
