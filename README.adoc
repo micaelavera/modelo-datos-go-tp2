@@ -173,11 +173,11 @@ create table consumo(
 ----
 func AgregarPKs(db *sql.DB) {
 	_, err := db.Exec(`alter table tarjeta  add constraint tarjeta_pk   primary key (nrotarjeta);
+	    alter table cliente  add constraint cliente_pk   primary key (nrocliente);
 		alter table comercio add constraint comercio_pk  primary key (nrocomercio);
 		alter table compra   add constraint compra_pk    primary key (nrooperacion);
 		alter table rechazo  add constraint rechazo_pk   primary key (nrorechazo);
 		alter table cierre   add constraint cierre_pk    primary key (anio,mes,terminacion);
-		alter table cierre   add constraint cierre_pk    primary key (mes,terminacion);
 		alter table cabecera add constraint cabecera_pk  primary key (nroresumen);
 		alter table detalle  add constraint detalle_pk   primary key (nroresumen,nrolinea);
 		alter table alerta   add constraint alerta_pk    primary key (nroalerta);`)
@@ -196,7 +196,7 @@ func AgregarFKs(db *sql.DB) {
 		alter table rechazo  add constraint rechazo_fk0 foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
 		alter table rechazo  add constraint rechazo_fk1 foreign key (nrocomercio) references comercio (nrocomercio);
 		alter table cabecera add constraint cabecera_fk foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
-		alter table alerta   add constraint alerta_fk0  foreign key (nrotarjeta)  references tarjeta (nrotarjeta);
+		alter table alerta   add constraint alerta_fk0  foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
 		`)
 	if err != nil {
 		log.Fatal(err)
@@ -211,11 +211,11 @@ func AgregarFKs(db *sql.DB) {
 ----
 func eliminarPKs(db *sql.DB) {
 	_, err := db.Exec(`--DROP PRIMARY KEYs
+	alter table cliente  drop constraint cliente_pk;
 	alter table tarjeta  drop constraint tarjeta_pk;
 	alter table comercio drop constraint comercio_pk;
 	alter table compra   drop constraint compra_pk;
 	alter table rechazo  drop constraint rechazo_pk;
-	alter table cierre   drop constraint cierre_pk;
 	alter table cierre   drop constraint cierre_pk;
 	alter table cabecera drop constraint cabecera_pk;
 	alter table detalle  drop constraint detalle_pk;
