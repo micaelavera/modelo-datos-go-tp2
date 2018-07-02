@@ -283,7 +283,7 @@ La tabla *rechazo* al insertar los datos posee el siguiente formato:
 -
 [source,sql]
 ----
-insert into rechazo values (default,nrocomercio, nrocomercio, fecha, monto, motivo);
+insert into rechazo values (default,nrotarjeta, nrocomercio, fecha, monto, motivo);
 ----
 
 En cambio, si dicha compra está autorizada, se procederá a insertar los datos correspondientes en la tabla *compra*.
@@ -358,20 +358,16 @@ declare
 	resumen int;
 	
 begin
-	--obtengo numero de tarjeta
 	select t.nrotarjeta into numerotarjeta from tarjeta t,cliente cl where t.nrocliente=cl.nrocliente and cliente=cl.nrocliente;
-	--obtengo la terminacion de la tarjeta
+	
 	select substring(numerotarjeta,16) into tertarjeta from tarjeta t where t.nrotarjeta=numerotarjeta;
 	
 	select * into resultado from cierre c where tertarjeta=cast(c.terminacion as char(10)) and c.anio=a and c.mes=m;
 	
-	--obtengo datos del cliente
 	select nombre,apellido,domicilio into datoscliente from cliente c,tarjeta t where cliente=c.nrocliente and t.nrocliente=cliente and t.nrotarjeta=numerotarjeta;
 		
-	--cantidad de productos comprados
 	select count(nrooperacion) into cantidadproductos from compra c where c.nrotarjeta=numerotarjeta;
 	
-	--total a pagar
 	for i in 1..cantidadproductos loop
 		select sum(co.monto) into totalcompra from compra co;	
 	end loop;
