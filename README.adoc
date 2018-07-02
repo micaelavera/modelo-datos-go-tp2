@@ -121,10 +121,11 @@ create table rechazo(
 	motivo      varchar(64)
 );
 create table cierre(
-	anio         integer,
+	anio        integer,
 	mes         integer,
 	terminacion integer,
 	fechainicio date,
+	fechacierre date,
 	fechavto    date
 );
 create table cabecera(
