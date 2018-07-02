@@ -131,6 +131,7 @@ func AgregarFKs(db *sql.DB) {
 		alter table rechazo  add constraint rechazo_fk1 foreign key (nrocomercio) references comercio (nrocomercio);
 		alter table cabecera add constraint cabecera_fk foreign key (nrotarjeta)  references tarjeta  (nrotarjeta);
 		alter table alerta   add constraint alerta_fk0  foreign key (nrotarjeta)  references tarjeta (nrotarjeta);
+		alter table alerta add constraint alerta_fk1 foreign key (nrorechazo) references rechazo (nrorechazo); 
 		`)
 	if err != nil {
 		log.Fatal(err)
@@ -160,7 +161,8 @@ func EliminarFKs(db *sql.DB) {
 		alter table rechazo  drop constraint rechazo_fk1;
 		alter table cabecera drop constraint cabecera_fk;
 		alter table alerta   drop constraint alerta_fk0;
-		`)
+		alter table alerta 	 drop constraint alerta_fk1;
+`)
 	if err != nil {
 		log.Fatal(err)
 	}
