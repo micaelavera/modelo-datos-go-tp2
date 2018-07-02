@@ -395,7 +395,7 @@ $$language plpgsql;`)
 
 		_ , data := db.Exec(`select alertar_clientes_1min('5578153904072665');`)
 		time.Sleep(1 * time.Minute)
-		
+
 		if data != nil {
 			log.Fatal(data)
 		}
@@ -430,7 +430,7 @@ $$language plpgsql;`)
 
 		_ , data := db.Exec(`select alertar_clientes_5min('5578153904072665');`)
 		time.Sleep(5* time.Minute)
-		
+
 		if data != nil {
 			log.Fatal(data)
 		}
@@ -462,8 +462,7 @@ begin
 				if found then
 					insert into rechazo values(default, nro_tarjeta,nrocomercio,now(),monto,'?plazo de vigencia expirado');
 				else
-					select * into autorizar from tarjeta t where t.nrotarjeta=nro_tarjeta and t.estado='suspendida';
-					if found then						
+					select * into autorizar from tarjeta t where t.nrotarjeta=nro_tarjeta and t.estado='suspendida'; if found then						
 						insert into rechazo values(default, nro_tarjeta,nrocomercio,now(),monto,'?la tarjeta se encuentra suspendida');
 					else 	
 						insert into compra values(default, nro_tarjeta,nrocomercio,now(), monto,true);
@@ -492,16 +491,16 @@ execute procedure generar_alerta();`)
 		log.Fatal(err)
 	}
 	defer rows.Close()
-	
+
 	//CONSUMO
 	_ , data := db.Exec(`select autorizar_compra('5578153904072665','1123',2,200);
 	select autorizar_compra('5578153904072665','1123',3,300);
 	select autorizar_compra('5578153904072665','1123',1,400); 
 	select autorizar_compra('5703068016463339','1234',1,1500); 
 	select autorizar_compra('5703068016463339','1234',5,2500);`)   //tiene que ser rechazada 
-	    if data != nil {                                                    
-			        log.Fatal(data)          
-				}          
+	    if data != nil {
+			log.Fatal(data)
+		}
 }
 
 func GenerarResumen(db *sql.DB) {

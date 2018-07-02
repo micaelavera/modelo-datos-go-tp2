@@ -4,6 +4,7 @@ declare
 	pendientes decimal;
 begin
 	select * into autorizar from tarjeta t where t.nrotarjeta = nro_tarjeta and t.estado= 'vigente';
+
 	if not found then
 		insert into rechazo values(default, nro_tarjeta, nrocomercio, current_timestamp, monto,'?tarjeta no valida o no vigente');
 	else
@@ -11,7 +12,6 @@ begin
 		if not found then
 			insert into rechazo values(default, nro_tarjeta, nrocomercio,current_timestamp, monto, '?codigo de seguridad invalido');
 	    else
-  
 			select sum(c.monto) as deuda into autorizar from compra c where c.nrotarjeta=nro_tarjeta and c.pagado=false;
 			pendientes:=autorizar.deuda;
 
@@ -117,7 +117,7 @@ begin
 		select c.nombre,co.fecha,co.monto into datoscomercio from comercio c,compra co 
 			where co.nrooperacion=i and c.nrocomercio=co.nrocomercio and co.nrotarjeta=numerotarjeta;
 		insert into detalle values(resumen,i,datoscomercio.fecha,datoscomercio.nombre,datoscomercio.monto);
-	end loop;	
+	end loop;
 	
 end;
 $$language plpgsql;

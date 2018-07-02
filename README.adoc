@@ -11,7 +11,6 @@ El presente documento consiste en describir la aplicación CLI realizada en Go s
 - Generación de la factura.
 - Alerta a los clientes.
 
-
 == Introducción
 
 Las tarjetas no permiten a los usuarios financiar una compra en cuotas,
@@ -46,13 +45,15 @@ las alertas:
 - Si una tarjeta registra dos compras en un lapso menor de 5 minutos en comercios con diferentes códigos postales.
 - Si una tarjeta registra dos rechazos por exceso de límite en el mismo día, la tarjeta tiene que ser suspendida preventivamente.
 
-
 == Descripción
 
 En este apartado explicaremos las dificultades que tuvimos a lo largo de
-la realización del trabajo práctico. Al principio, la ejecución de las funciones nos resultó un poco tediosa, ya que tuvimos problemas con la implementación de las funciones como así pensar la resolución del problema de las alertas en un determinado tiempo.
+la realización del trabajo práctico.
+
+Al principio, la ejecución de las funciones nos resultó un poco tediosa, ya que tuvimos problemas con la implementación de las funciones como así pensar la resolución del problema de las alertas en un determinado tiempo.
 
 == Implementación
+
 En este apartado, explicaremos la implementación de la aplicación CLI en Go siguiendo el modelo de datos de operaciones de tarjeta de crédito.
 
 === Go: Database 
@@ -241,7 +242,7 @@ func eliminarFKs(db *sql.DB) {
 }
 ----
 
-Por otra parte, la inserción de datos de las tablas cliente, tarjeta, comercio y cierre se realizó mediante la funcion *InsertarDatos* con el siguiente formato:
+Por otra parte, la inserción de datos de las tablas cliente, tarjeta, comercio y cierre se realizó mediante la funcion `InsertarDatos` con el siguiente formato:
 
 [source,sql]
 ----
@@ -250,37 +251,37 @@ func InsertarDatos (db *sql.DB){
 }
 ----
 
-
-A continuación, explicaremos la implementación de los stored procedures realizados como los respectivos triggers.
+A continuación, explicaremos la implementación de los stored procedures
+realizados, como los respectivos triggers.
 
 === Autorización de la compra
 
 La *autorización de la compra* consiste en recibir los datos de la tarjeta, es decir, el número de dicha tarjeta y su código de seguridad, el número del comercio y el monto de dicho consumo. 
 
-Para esto, realizamos la función *autorizar_compra* que toma como los parámetros los datos nombrados anteriormente, cuyo valor de retorno será un boolean. 
-Si todos estos datos son correctos, se procederá a autorizar dicha compra, por esto la función retornara _true_. En caso de que algún dato sea inválido, devolverá _false_.
+Para esto, realizamos la función `autorizar_compra` que toma como los parámetros los datos nombrados anteriormente, cuyo valor de retorno será un boolean. 
+
+Si todos estos datos son correctos, se procederá a autorizar dicha compra, por esto la función retornara `true`. En caso de que algún dato sea inválido, devolverá `false`.
 
 El procedimiento antes de autorizar dicha compra debe cumplir una serie de elementos:
     
-    - El número de la tarjeta debe ser existente, y corresponder a alguna tarjeta vigente.
-    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?tarjeta no válida o no vigente*.
+- El número de la tarjeta debe ser existente, y corresponder a alguna tarjeta vigente.
+En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje `?tarjeta no válida o no vigente`.
 
-    - El código de seguridad debe ser correcto. 
-    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?código de seguridad inválido*.
+- El código de seguridad debe ser correcto. 
+En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?código de seguridad inválido*.
 
-    - El monto total de compras pendientes de pago más la compra a realizar no debe superar el límite de compra de la tarjeta.
-    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?supera límite de tarjeta*.
+- El monto total de compras pendientes de pago más la compra a realizar no debe superar el límite de compra de la tarjeta.
+En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?supera límite de tarjeta*.
 
-    - La tarjeta no debe estar vencida. 
-    En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?plazo de vigencia expirado*.
+- La tarjeta no debe estar vencida. 
+En caso de que no cumpla, se debe cargar los datos en la tabla rechazo con el mensaje *?plazo de vigencia expirado*.
 
-    - La tarjeta no debe estar suspendida. En caso de que no cumpla ,se debe cargar los datos en la tabla rechazo con el mensaje *?la tarjeta se encuentra suspendida*.
+- La tarjeta no debe estar suspendida. En caso de que no cumpla ,se debe cargar los datos en la tabla rechazo con el mensaje *?la tarjeta se encuentra suspendida*.
 
 Por esto, como se nombró anteriormente si al menos uno de los parámetros es inválido se procederá a insertar los datos de la compra en la tabla *rechazo* donde se ingresará el número de la tarjeta, el número de comercio, el monto, la fecha y el respectivo mensaje del motivo del rechazo de dicha compra. 
 
+La tabla `rechazo` al insertar los datos posee el siguiente formato:
 
-La tabla *rechazo* al insertar los datos posee el siguiente formato:
--
 [source,sql]
 ----
 insert into rechazo values (default,nrotarjeta, nrocomercio, fecha, monto, motivo);
@@ -341,6 +342,7 @@ $$language plpgsql;
 ----
 
 === Generación del resumen 
+
 La *generación del resumen* consiste en tomar el numero del cliente y el periodo del año(año y mes) para asi insertar los datos correspondientes en las tablas *cabecera* y *detalle*. Donde en la respectiva tabla se insertaran el nombre, apellido, numero de tarjeta y direccion del cliente, el periodo del resumen, fecha de vencimiento , todas las compras realizadas en el periodo establecido y el total a pagar.
 
 [source,sql]
@@ -387,7 +389,6 @@ end;
 $$language plpgsql;
 ----
 
-
 === Alertas a los clientes
 
 Se debe generar alertas por posibles fraudes. Existe un Call Center que ante cada alerta generada automáticamente, realiza un llamado telefónico al cliente, indicándole la alerta detectada, y verifica
@@ -413,21 +414,29 @@ execute procedure generar_alerta();
 ----
 
 === Comparación entre el modelo relacional con un modelo no relacional NoSQL.
-En este apartado describiremos la compraracion entre SQL y NoSQL basada en JSON, como lo es BoltDB
-Las bases de datos relacionales estructuran datos en filas y solo son accesibles mediante el uso de SQL. Sin embargo Bolt accede a todos los datos mediante una clave de segmento de bytes. 
- 
 
+En este apartado describiremos la compraracion entre SQL y NoSQL basada
+en JSON, como lo es BoltDB.
+
+Las bases de datos relacionales estructuran datos en filas y solo son accesibles mediante el uso de SQL. Sin embargo Bolt accede a todos los datos mediante una clave de segmento de bytes. 
+
+Mientras que una base de datos relacional se conecta a un servidor,
+Bolt solo necesita de un archivo con extension .db.
+
+Para realizar una busqueda, en el  modelo relacional la busqueda se
+realiza mediante consultas(select * from tabla) en cambio en el modelo
+no relacional la busqueda se realiza con ciclos anidados. 
 
 == Conclusiones
 
-Este trabajo práctico se ha realizado con el objetivo de implementar en un nuevo lenguaje *Go* y
-explicar un modelo de datos relativo a tarjetas de crédito. Para llegar
-a ese objetivo se tuvo que realizar las distintas funciones para cubrir
-con todos los requerimientos solicitados.
+Este trabajo práctico se ha realizado con el objetivo de utilizar un nuevo lenguaje *Go* y
+explicar un modelo de datos relativo a tarjetas de crédito. Para llegar a ese objetivo
+se tuvo que realizar las distintas funciones para cubrir con todos los
+requerimientos solicitados.
 
-
-Para concluir, la ejecución de este trabajo práctico nos resultó complicada, las dificultades no  puedieron ser resueltas.
-
-Estas dificultades diferían en cuanto al concepto de NoSQL y la creación de la funcion de alertas a los clientes en un determinado tiempo.
-
+Para concluir, la ejecución de este trabajo práctico nos resultó
+satisfactorio pero complicado, ya que las dificultades que tuvimos diferían
+en cuanto al concepto de NoSQL y la creación de las funciones de alertas
+a los clientes en un determinado tiempo, como describimos en el
+desarrollo del informe se pudo resolver las dificultades de manera eficaz.
 
