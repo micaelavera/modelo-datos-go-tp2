@@ -137,7 +137,7 @@ func AgregarFKs(db *sql.DB) {
 	}
 	//Alter table nombredelatabla drop constraint nombre_pk;
 }
-func eliminarPKs(db *sql.DB) {
+func EliminarPKs(db *sql.DB) {
 	_, err := db.Exec(`alter table cliente  drop constraint cliente_pk;
 	alter table tarjeta  drop constraint tarjeta_pk;
 	alter table comercio drop constraint comercio_pk;
@@ -152,7 +152,7 @@ func eliminarPKs(db *sql.DB) {
 		log.Fatal(err)
 	}
 }
-func eliminarFKs(db *sql.DB) {
+func EliminarFKs(db *sql.DB) {
 	_, err := db.Exec(`alter table tarjeta  drop constraint tarjeta_fk0;
 		alter table compra   drop constraint compra_fk0;
 		alter table compra   drop constraint compra_fk1;
@@ -387,28 +387,28 @@ declare
 begin
 	select * into autorizar from tarjeta t where t.nrotarjeta = nro_tarjeta and t.estado= 'vigente';
 	if not found then
-		insert into rechazo values(default, nro_tarjeta, nrocomercio, current_timestamp, monto,'?tarjeta no valida o no vigente');
+		insert into rechazo values(default, nro_tarjeta, nrocomercio,now(), monto,'?tarjeta no valida o no vigente');
 	else
 		select * into autorizar from tarjeta t where t.codseguridad = cod_seguridad;
 		if not found then
-			insert into rechazo values(default, nro_tarjeta, nrocomercio,current_timestamp, monto, '?codigo de seguridad invalido');
+			insert into rechazo values(default, nro_tarjeta, nrocomercio,now(), monto, '?codigo de seguridad invalido');
 	    else
   
 			select sum(c.monto) as deuda into autorizar from compra c where c.nrotarjeta=nro_tarjeta and c.pagado=false;
 			pendientes:=autorizar.deuda;
 
 			if pendientes+monto > (select limitecompra from tarjeta t where t.nrotarjeta=nro_tarjeta) then
-				insert into rechazo values(default, nro_tarjeta,nrocomercio,current_timestamp,monto,'?supera limite de tarjeta');
+				insert into rechazo values(default, nro_tarjeta,nrocomercio,now(),monto,'?supera limite de tarjeta');
 			else
 				select * into autorizar from tarjeta t where t.nrotarjeta=nro_tarjeta and t.estado='anulada';
 				if found then
-					insert into rechazo values(default, nro_tarjeta,nrocomercio,current_timestamp,monto,'?plazo de vigencia expirado');
+					insert into rechazo values(default, nro_tarjeta,nrocomercio,now(),monto,'?plazo de vigencia expirado');
 				else
 					select * into autorizar from tarjeta t where t.nrotarjeta=nro_tarjeta and t.estado='suspendida';
 					if found then						
-						insert into rechazo values(default, nro_tarjeta,nrocomercio,current_timestamp,monto,'?la tarjeta se encuentra suspendida');
+						insert into rechazo values(default, nro_tarjeta,nrocomercio,now(),monto,'?la tarjeta se encuentra suspendida');
 					else 	
-						insert into compra values(default, nro_tarjeta,nrocomercio,current_timestamp, monto,false);
+						insert into compra values(default, nro_tarjeta,nrocomercio,now(), monto,true);
 						return true;		
 					end if;
 				end if;
@@ -417,12 +417,31 @@ begin
 	end if;	
 return false;
 end;
-$$language plpgsql; `)
+$$language plpgsql; 
+
+create or replace function generar_alerta()returns trigger as $$        
+begin                                                                               insert into alerta values(default,new.nrotarjeta,new.fecha,new.nrorechazo,0,'Rechazo');
+	     return new;                                                         
+end;                                                                 
+$$language plpgsql;                                                          
+
+create trigger generar_alerta_trigger                                   
+after insert on rechazo                                                 
+for each row                                                            
+execute procedure generar_alerta();`)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
+	
+	//CONSUMO
+	_ , data := db.Exec(`select autorizar_compra('5578153904072665','1123',5,200);
+	select autorizar_compra('5703068016463339','1234',1,1500);
+	select autorizar_compra('5703068016463339','1234',5,2500);`)   //tiene que ser rechazada 
+	    if data != nil {                                                    
+			        log.Fatal(data)          
+				}          
 }
 
 func LeerDatosUsuario(db *sql.DB) {
@@ -434,8 +453,9 @@ func LeerDatosUsuario(db *sql.DB) {
 	fmt.Printf("*	3. Agregar las Primary Keys				   \n")
 	fmt.Printf("*	4. Agregar las Foreign Keys				   \n")
 	fmt.Printf("*	5. Insertar los datos en las tablas		   \n")
-	fmt.Printf("* 	6. Eliminar las Primary Keys y Foreign Keys\n")
-	fmt.Printf("*	7. Salir de la aplicacion				   \n")
+	fmt.Printf("*	6. Eliminar las Primary Keys y Foreign Keys\n")
+	fmt.Printf("*	7. Autorizar compra                        \n")
+	fmt.Printf("*	8. Salir de la aplicacion				   \n")
 	fmt.Printf("***********************************************\n")
 
 	for !salir {
@@ -457,13 +477,15 @@ func LeerDatosUsuario(db *sql.DB) {
 				InsertarDatos(db)
 				fmt.Printf("Insertando datos ...\n")
 			case 6:
-				eliminarFKs(db)
-				eliminarPKs(db)
+				EliminarFKs(db)
+				EliminarPKs(db)
 				fmt.Printf("Eliminando PKs y FKS ...\n")
 			case 7:
-			salir = true
+				AutorizarCompra(db)
+			case 8:
+				salir = true
 			default:
-			fmt.Printf("Solo opciones entre 1 y 7\n")
+				fmt.Printf("Solo opciones entre 1 y 8\n")
 		}
 	}
 }
