@@ -550,6 +550,16 @@ $$language plpgsql;`)
 		log.Fatal(err)
 	}
 	defer rows.Close()
+	
+	//Generar Resumen
+	_ , data := db.Exec(`select generar_resumen(1,2018,5);
+	select generar_resumen(1,2018,5);
+	select generar_resumen(2,2018,6);
+	select generar_resumen(3,2018,4);
+	select generar_resumen(2,2018,4);`)
+	    if data != nil {                                                    
+			log.Fatal(data)          
+		} 
 }
 
 func LeerDatosUsuario(db *sql.DB) {
