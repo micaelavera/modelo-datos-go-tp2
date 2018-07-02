@@ -228,42 +228,46 @@ func Compras(db *bolt.DB) {
 
 }
 
+func LeerDatosUsuario(db *bolt.DB) {
+	var opcion int
+	var salir = false
+	fmt.Printf("************** Selecciones posibles NoSQL *****************\n")
+	fmt.Printf("*			1- Tabla clientes                             *\n")
+	fmt.Printf("*			2- Tabla Tarjetas                             *\n")
+	fmt.Printf("*			3- Tabla Comercios                            *\n")
+	fmt.Printf("*			4- Tabla Compras.                             *\n")
+	fmt.Printf("*           5- Salir                                      *\n")
+	fmt.Printf("***********************************************************\n")
+	
+		for !salir {
+			fmt.Scanf("%d", &opcion)
+			switch opcion {
+			case 1:
+				Clientes(db)
+			case 2:
+				Tarjetas(db)
+			case 3:
+				Comercios(db)
+			case 4:
+				Compras(db)
+			case 5:
+				salir = true
+			default:
+				fmt.Printf("Solo opciones entre 1 y 5\n")
+			}
+		}
+}
+
 func main() {
 
-	db, err := bolt.Open("postgres.db", 0600, nil)
+	db, err := bolt.Open("tp2.db", 0600, nil)
 
 	if err != nil {
 		log.Fatal(err)
 
 	}
 	defer db.Close()
-	Clientes(db)
-	Tarjetas(db)
-	Comercios(db)
-	Compras(db)
-	//	LeerDatosUsuario(db);
-	/*
-		data, err := json.MarshalIndent(clientes, "", "    ")
-		if err != nil {
-			log.Fatalf("JSON marshaling failed: %s", err)
-		}
-		fmt.Printf("%s\n", data)
 
-		var personas []Cliente
-		err = json.Unmarshal(data, &personas)
-		if err != nil {
-			log.Fatalf("JSON unmarshaling failed: %s", err)
-		}
-
-		fmt.Printf("%v\n", personas)
-
-		/*
-		   //----------------------------------------
-		   	db, err := bolt.Open(".db", 0600, nil)
-		   	if err != nil {
-		   		log.Fatal(err)
-		   	}
-		   	defer db.Close()
-	*/
+	LeerDatosUsuario(db)
 
 }
