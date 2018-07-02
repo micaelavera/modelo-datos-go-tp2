@@ -446,6 +446,54 @@ execute procedure generar_alerta();`)
 				}          
 }
 
+func GenerarResumen(db *sql.DB) {
+	rows, err := db.Query(`create or replace function generar_resumen(cliente integer,a integer, m integer) returns void as $$
+declare
+	numerotarjeta text;
+	tertarjeta text;
+	resultado record;
+	datoscliente record;
+	totalcompra decimal;
+	cantidadproductos int;
+	datoscomercio record;
+	i int;
+	resumen int;
+	
+begin
+	select t.nrotarjeta into numerotarjeta from tarjeta t,cliente cl where t.nrocliente=cl.nrocliente and cliente=cl.nrocliente;
+	
+	select substring(numerotarjeta,16) into tertarjeta from tarjeta t where t.nrotarjeta=numerotarjeta;
+	
+	select * into resultado from cierre c where tertarjeta=cast(c.terminacion as char(10)) and c.anio=a and c.mes=m;
+	
+	select nombre,apellido,domicilio into datoscliente from cliente c,tarjeta t where cliente=c.nrocliente and t.nrocliente=cliente and t.nrotarjeta=numerotarjeta;
+		
+	select count(nrooperacion) into cantidadproductos from compra c where c.nrotarjeta=numerotarjeta;
+	
+	for i in 1..cantidadproductos loop
+		select sum(co.monto) into totalcompra from compra co;	
+	end loop;
+	
+	insert into cabecera values (default,datoscliente.nombre,datoscliente.apellido,datoscliente.domicilio,
+		numerotarjeta,resultado.fechainicio,resultado.fechacierre,resultado.fechavto,totalcompra);
+		
+	select nroresumen into resumen from cabecera;
+	
+	for i in 1..cantidadproductos loop
+		select c.nombre,co.fecha,co.monto into datoscomercio from comercio c,compra co 
+			where co.nrooperacion=i and c.nrocomercio=co.nrocomercio and co.nrotarjeta=numerotarjeta;
+		insert into detalle values(resumen,i,datoscomercio.fecha,datoscomercio.nombre,datoscomercio.monto);
+	end loop;	
+	
+end;
+$$language plpgsql;`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+}
+
 func LeerDatosUsuario(db *sql.DB) {
 	var opcion int
 	var salir = false
@@ -457,7 +505,8 @@ func LeerDatosUsuario(db *sql.DB) {
 	fmt.Printf("*	5. Insertar los datos en las tablas		   \n")
 	fmt.Printf("*	6. Eliminar las Primary Keys y Foreign Keys\n")
 	fmt.Printf("*	7. Autorizar compra                        \n")
-	fmt.Printf("*	8. Salir de la aplicacion				   \n")
+	fmt.Printf("*	8. Generar resumen						   \n")
+	fmt.Printf("*	9. Salir de la aplicacion				   \n")
 	fmt.Printf("***********************************************\n")
 
 	for !salir {
@@ -485,6 +534,8 @@ func LeerDatosUsuario(db *sql.DB) {
 			case 7:
 				AutorizarCompra(db)
 			case 8:
+			    GenerarResumen(db)
+			case 9:
 				salir = true
 			default:
 				fmt.Printf("Solo opciones entre 1 y 8\n")
