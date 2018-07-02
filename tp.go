@@ -361,23 +361,79 @@ func InsertarDatos(db *sql.DB) {
     insert into cierre values(2018,12,7,'2018-12-19','2019-01-19','2019-01-29');
     insert into cierre values(2018,12,8,'2018-12-22','2019-01-22','2019-01-29');
     insert into cierre values(2018,12,9,'2018-12-25','2019-01-25','2019-02-02');
-`)
+	`)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func AlertarClientes_1min() {
+func AlertarClientes_1min(db *sql.DB) {
 	for {
-		//funcion del alerta al cliente cada minuto
+		rows, err:=db.Query(`create or replace function alertar_clientes_1min(nro_tarjeta char(16)) returns void as $$
+declare                                                                 
+    v record;                                                           
+    codigo text;                                                        
+    alerta record;                                                      
+begin                                                                   
+                                                                        
+    for v in select c.codigopostal,c1.fecha from compra c1, comercio c  
+        where c1.nrocomercio=c.nrocomercio and                          
+            c1.nrotarjeta=nro_tarjeta                                   
+                    order by c1.fecha desc limit 1 loop                 
+                    select * into alerta from comercio;                 
+                    codigo:=alerta.codigopostal;                        
+                if current_timestamp-v.fecha <'00:01:00' and codigo=v.codigopostal then
+                 insert into alerta values(default, nro_tarjeta,now(),null,1,'?dos compras dentro de un minuto');
+    end if;                                                             
+    end loop;                                                           
+end;                                                                    
+$$language plpgsql;`)
+		if err != nil{
+			log.Fatal(err)
+		}
+			defer rows.Close()
+
+		_ , data := db.Exec(`select alertar_clientes_1min('5578153904072665');`)
 		time.Sleep(1 * time.Minute)
+		
+		if data != nil {
+			log.Fatal(data)
+		}
 	}
 }
 
-func AlertarClientes_5min() {
+func AlertarClientes_5min(db *sql.DB) {
 	for {
-		//funcion del alerta al cliente cada 5 minutos
-		time.Sleep(5 * time.Minute)
+		rows, err := db.Query(`create or replace function alertar_clientes_5min(nro_tarjeta char(16)) returns void as $$
+declare                                                                 
+    v record;                                                           
+    codigo text;                                                        
+    alerta record;                                                      
+begin                                                                   
+                                                                        
+    for v in select c.codigopostal,c1.fecha from compra c1, comercio c  
+        where c1.nrocomercio=c.nrocomercio and                          
+            c1.nrotarjeta=nro_tarjeta                                   
+                    order by c1.fecha desc limit 1 loop                 
+                    select * into alerta from comercio;                 
+                    codigo:=alerta.codigopostal;                        
+                if current_timestamp-v.fecha < '00:05:00' and codigo<>v.codigopostal then
+                 insert into alerta values(default, nro_tarjeta,now(),null,5,'?dos compras dentro de 5 minutos');
+    end if;                                                             
+    end loop;                                                           
+end;                                                                    
+$$language plpgsql;`)
+		if err != nil{
+			log.Fatal(err)
+		}
+			defer rows.Close()
+
+		_ , data := db.Exec(`select alertar_clientes_5min('5578153904072665');`)
+		time.Sleep(5* time.Minute)
+		
+		if data != nil {
+			log.Fatal(data)
+		}
 	}
 }
 
@@ -438,60 +494,14 @@ execute procedure generar_alerta();`)
 	defer rows.Close()
 	
 	//CONSUMO
-	_ , data := db.Exec(`select autorizar_compra('5578153904072665','1123',5,200);
-	select autorizar_compra('5703068016463339','1234',1,1500);
+	_ , data := db.Exec(`select autorizar_compra('5578153904072665','1123',2,200);
+	select autorizar_compra('5578153904072665','1123',3,300);
+	select autorizar_compra('5578153904072665','1123',1,400); 
+	select autorizar_compra('5703068016463339','1234',1,1500); 
 	select autorizar_compra('5703068016463339','1234',5,2500);`)   //tiene que ser rechazada 
 	    if data != nil {                                                    
 			        log.Fatal(data)          
 				}          
-}
-
-func GenerarResumen(db *sql.DB) {
-	rows, err := db.Query(`create or replace function generar_resumen(cliente integer,a integer, m integer) returns void as $$
-declare
-	numerotarjeta text;
-	tertarjeta text;
-	resultado record;
-	datoscliente record;
-	totalcompra decimal;
-	cantidadproductos int;
-	datoscomercio record;
-	i int;
-	resumen int;
-	
-begin
-	select t.nrotarjeta into numerotarjeta from tarjeta t,cliente cl where t.nrocliente=cl.nrocliente and cliente=cl.nrocliente;
-	
-	select substring(numerotarjeta,16) into tertarjeta from tarjeta t where t.nrotarjeta=numerotarjeta;
-	
-	select * into resultado from cierre c where tertarjeta=cast(c.terminacion as char(10)) and c.anio=a and c.mes=m;
-	
-	select nombre,apellido,domicilio into datoscliente from cliente c,tarjeta t where cliente=c.nrocliente and t.nrocliente=cliente and t.nrotarjeta=numerotarjeta;
-		
-	select count(nrooperacion) into cantidadproductos from compra c where c.nrotarjeta=numerotarjeta;
-	
-	for i in 1..cantidadproductos loop
-		select sum(co.monto) into totalcompra from compra co;	
-	end loop;
-	
-	insert into cabecera values (default,datoscliente.nombre,datoscliente.apellido,datoscliente.domicilio,
-		numerotarjeta,resultado.fechainicio,resultado.fechacierre,resultado.fechavto,totalcompra);
-		
-	select nroresumen into resumen from cabecera;
-	
-	for i in 1..cantidadproductos loop
-		select c.nombre,co.fecha,co.monto into datoscomercio from comercio c,compra co 
-			where co.nrooperacion=i and c.nrocomercio=co.nrocomercio and co.nrotarjeta=numerotarjeta;
-		insert into detalle values(resumen,i,datoscomercio.fecha,datoscomercio.nombre,datoscomercio.monto);
-	end loop;	
-	
-end;
-$$language plpgsql;`)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
 }
 
 func LeerDatosUsuario(db *sql.DB) {
@@ -505,8 +515,7 @@ func LeerDatosUsuario(db *sql.DB) {
 	fmt.Printf("*	5. Insertar los datos en las tablas		   \n")
 	fmt.Printf("*	6. Eliminar las Primary Keys y Foreign Keys\n")
 	fmt.Printf("*	7. Autorizar compra                        \n")
-	fmt.Printf("*	8. Generar resumen						   \n")
-	fmt.Printf("*	9. Salir de la aplicacion				   \n")
+	fmt.Printf("*	8. Salir de la aplicacion				   \n")
 	fmt.Printf("***********************************************\n")
 
 	for !salir {
@@ -533,9 +542,9 @@ func LeerDatosUsuario(db *sql.DB) {
 				fmt.Printf("Eliminando PKs y FKS ...\n")
 			case 7:
 				AutorizarCompra(db)
+				go AlertarClientes_1min(db)
+				go AlertarClientes_5min(db)
 			case 8:
-			    GenerarResumen(db)
-			case 9:
 				salir = true
 			default:
 				fmt.Printf("Solo opciones entre 1 y 8\n")
